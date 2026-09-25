@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+front/node_modules/
+back/vendor/
+
+# Builds & Outputs
+front/dist/
+front/dist-ssr/
+public/build/
+
+# Environment files
+.env
+.env.*
+back/.env
+!back/.env.example
+
+# Laravel storage & logs
+back/storage/*.key
+back/storage/logs/*.log
+back/storage/framework/cache/*
+back/storage/framework/sessions/*
+back/storage/framework/views/*
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

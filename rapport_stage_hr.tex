@@ -1,0 +1,832 @@
+\documentclass[12pt,a4paper]{report}
+
+% ==========================================
+% PACKAGES ET CONFIGURATION
+% ==========================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{float}
+
+% Packages TikZ et bibliothèques pour le rendu vectoriel des diagrammes
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows, fit, backgrounds}
+
+% Configuration hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black,
+    pdftitle={Rapport de Stage - HR Management System},
+    pdfauthor={Arwa}
+}
+
+% Style du code (Listings)
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\lstset{
+    backgroundcolor=\color{codegray},
+    keywordstyle=\color{codeblue}\bfseries,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% Commande ultra-robuste qui affiche l'image depuis figures/, sinon à la racine, sinon encadré
+\newcommand{\safefigure}[4][0.92\textwidth]{%
+    \begin{figure}[H]
+        \centering
+        \IfFileExists{figures/#2}{%
+            \includegraphics[width=#1]{figures/#2}%
+        }{%
+            \IfFileExists{#2}{%
+                \includegraphics[width=#1]{#2}%
+            }{%
+                \fbox{%
+                    \begin{minipage}[c][5cm][c]{#1}
+                        \centering
+                        \color{gray!75!black}
+                        \vspace{0.5em}
+                        \textbf{\textit{Emplacement réservé à l'image / diagramme}}\\[0.8em]
+                        \small Image \texttt{\detokenize{#2}} non trouvée.\\[0.5em]
+                    \end{minipage}%
+                }%
+            }%
+        }%
+        \caption{#3}
+        \label{#4}
+    \end{figure}
+}
+\newcommand{\diagramplaceholder}[4][0.92\textwidth]{\safefigure[#1]{#2}{#3}{#4}}
+
+\onehalfspacing
+
+% ==========================================
+% DEBUT DU DOCUMENT
+% ==========================================
+\begin{document}
+
+% ------------------------------------------
+% PAGE DE GARDE
+% ------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+    
+    % Logo Officiel d'Amsoft
+    \IfFileExists{figures/logo_amsoft.png}{%
+        \includegraphics[width=0.45\textwidth]{figures/logo_amsoft.png}\\[0.4cm]
+    }{%
+        {\Huge \textbf{\color{blue!80!black} AMSOFT}}\\[0.3cm]
+    }
+    {\large \textbf{Ingénierie \& Solutions Digitales}}\\[1.5cm]
+    
+    \rule{\linewidth}{1.5pt}\\[0.5cm]
+    {\huge \textbf{RAPPORT DE STAGE}}\\[0.4cm]
+    {\Large \textbf{Conception et Développement d'une Application Web de Gestion des Ressources Humaines}}\\[0.3cm]
+    {\LARGE \textit{« HR Management System »}}\\[0.5cm]
+    \rule{\linewidth}{1.5pt}\\[2cm]
+    
+    \begin{minipage}{0.48\textwidth}
+        \begin{flushleft} \large
+            \textbf{Réalisé par :}\\
+            Arwa
+        \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.48\textwidth}
+        \begin{flushright} \large
+            \textbf{Encadré par :}\\
+            M. AMINE\\
+            \small Encadrant professionnel - Amsoft
+        \end{flushright}
+    \end{minipage}
+
+    \vfill
+    {\large Année Académique 2025-2026}
+\end{titlepage}
+
+% ------------------------------------------
+% PAGES DE GARDE SECONDAIRES
+% ------------------------------------------
+\pagenumbering{roman}
+
+% Dédicaces
+\chapter*{Dédicaces}
+\addcontentsline{toc}{chapter}{Dédicaces}
+\begin{center}
+    \itshape
+    À mes chers parents, pour leur amour inconditionnel, leurs prières et leurs sacrifices constants qui ont éclairé mon chemin tout au long de mes études.\\[1cm]
+    
+    À ma famille et à mes proches, pour leur soutien moral, leurs encouragements et leur confiance.\\[1cm]
+    
+    À mes enseignants, encadrants et collègues, pour les connaissances transmises et les expériences qui ont contribué à ma formation professionnelle.\\[1cm]
+    
+    Je dédie ce travail à toutes les personnes qui croient en l'effort, à la rigueur et à la persévérance.
+\end{center}
+\newpage
+
+% Remerciements
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+Je tiens à exprimer ma profonde gratitude à l'ensemble des personnes ayant contribué au bon déroulement de mon stage et à la réalisation de ce projet.
+
+Je remercie tout particulièrement mon encadrant professionnel au sein de \textbf{Amsoft}, \textbf{M. AMINE}, pour sa disponibilité, ses conseils, ses orientations techniques et la confiance accordée durant les différentes étapes du projet.
+
+J'adresse également mes remerciements à la direction et à l'ensemble de l'équipe d'\textbf{Amsoft} pour leur accueil, leur accompagnement et l'environnement professionnel qui m'a permis de mettre en pratique mes connaissances et d'en acquérir de nouvelles.
+
+Enfin, je remercie les enseignants et les membres du jury pour l'intérêt porté à ce travail et pour leurs remarques qui contribuent à son amélioration.
+\newpage
+
+% Tables
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+% ------------------------------------------
+% CORPS DU RAPPORT
+% ------------------------------------------
+\pagenumbering{arabic}
+
+% INTRODUCTION GENERALE
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+
+La transformation numérique modifie profondément les méthodes de travail des organisations. Parmi les fonctions concernées, la gestion des ressources humaines occupe une place stratégique puisqu'elle nécessite le traitement quotidien d'un volume important d'informations : dossiers des collaborateurs, contrats, congés, absences, présences, documents administratifs et demandes internes.
+
+Dans ce contexte, la centralisation des informations et l'automatisation des processus permettent d'améliorer la fiabilité des données, de réduire les opérations manuelles et de faciliter le suivi des activités RH. Le projet \textbf{HR Management System}, réalisé dans le cadre du stage au sein de \textbf{Amsoft}, s'inscrit dans cette démarche de digitalisation.
+
+L'objectif est de concevoir et développer une application web moderne, responsive, sécurisée et évolutive reposant sur une architecture découplée (Frontend React.js / Backend Laravel REST API). Le système permet aux différents profils d'utilisateurs de disposer d'un espace adapté à leurs responsabilités : le personnel RH gère les collaborateurs, les contrats, les congés, les absences, les présences, les documents et les demandes RH, tandis que l'employé dispose d'un espace personnel dédié.
+
+Le système intègre également des fonctionnalités avancées relatives aux rôles et permissions, à la traçabilité par journal d'audit, aux statistiques en temps réel, à la validation sécurisée des données, ainsi qu'à la conteneurisation Docker.
+
+La démarche globale du projet suit la chaîne suivante :
+\begin{center}
+    \textbf{Analyse $\rightarrow$ Conception $\rightarrow$ Modélisation $\rightarrow$ Prototypage $\rightarrow$ Développement $\rightarrow$ Tests $\rightarrow$ Déploiement}
+\end{center}
+
+Le présent rapport expose la démarche suivie, depuis l'analyse des besoins jusqu'à la réalisation effective de l'application web et la préparation de son déploiement.
+
+Le rapport est organisé en cinq chapitres :
+\begin{itemize}
+    \item \textbf{Chapitre 1 - Contexte Général du Projet :} présentation du contexte, problématique, objectifs, périmètre fonctionnel, acteurs et besoins non fonctionnels.
+    \item \textbf{Chapitre 2 - Étude Fonctionnelle :} identification des acteurs, diagramme des cas d'utilisation, scénarios et règles métier.
+    \item \textbf{Chapitre 3 - Étude Technique et Architecture :} choix technologiques retenus (React, Laravel, MySQL, Docker), architecture MVC en couches et API REST.
+    \item \textbf{Chapitre 4 - Étude Conceptuelle et Modélisation :} conception de la base de données, diagramme de classes UML, diagrammes d'activité, de séquence, de composants et de déploiement.
+    \item \textbf{Chapitre 5 - Réalisation et Prototypage :} présentation des interfaces réalisées, principes UI/UX, exigences de sécurité, plan de tests et déploiement.
+\end{itemize}
+
+% ------------------------------------------
+% CHAPITRE 1
+% ------------------------------------------
+\chapter{Contexte Général du Projet}
+
+\section{Présentation de l'entreprise d'accueil}
+\textbf{Amsoft} est une entreprise de référence spécialisée dans l'ingénierie logicielle, la transformation digitale et l'édition de solutions numériques d'entreprise. Forte d'une expertise reconnue dans le développement d'architectures applicatives modernes, Amsoft accompagne ses partenaires dans la digitalisation de leurs processus métier, le conseil en systèmes d'information, et le déploiement de solutions Web, Cloud et mobiles sur-mesure.
+
+Ses pôles d'expertise clés couvrent :
+\begin{itemize}
+    \item \textbf{Ingénierie Web \& Mobile Full-Stack :} conception et développement d'applications découplées haute performance (React.js, Node.js, Laravel) ;
+    \item \textbf{Solutions de Gestion d'Entreprise :} développement de modules ERP/RH, de systèmes de facturation et de gestion documentaire (GED) ;
+    \item \textbf{DevOps \& Infrastructures Cloud :} conteneurisation des services applicatifs (Docker, Docker Compose), intégration et déploiement continus (CI/CD) ;
+    \item \textbf{Cybersécurité \& Audit Logique :} sécurisation des échanges API REST, gestion stricte des droits d'accès (RBAC) et traçabilité des opérations critiques.
+\end{itemize}
+
+L'organisation du travail chez Amsoft s'appuie sur la méthodologie Agile (Scrum / Kanban), privilégiant une collaboration étroite, une grande réactivité et des livrables de haute qualité logicielle. Le projet \textbf{HR Management System} présenté dans ce rapport répond à un besoin stratégique d'automatiser, centraliser et digitaliser l'ensemble des activités RH au sein d'une plateforme unifiée.
+
+\section{Contexte et problématique}
+La gestion RH mobilisant une multitude de données et de documents administratifs, la dispersion des informations (fichiers isolés, documents papier ou outils déconnectés) engendre des inefficacités majeures :
+\begin{itemize}
+    \item recherche longue des dossiers collaborateurs ;
+    \item risque d'incohérence et de duplication des informations ;
+    \item visibilité limitée sur les soldes et demandes de congés ;
+    \item suivi difficile des échéances contractuelles ;
+    \item absence d'un système centralisé de stockage de documents ;
+    \item traçabilité insuffisante des opérations sensibles ;
+    \item manque d'indicateurs consolidés pour le pilotage RH.
+\end{itemize}
+
+La problématique du projet se résume ainsi :
+\begin{quotation}
+    \itshape
+    Comment concevoir et développer une plateforme web RH centralisée permettant de gérer efficacement les collaborateurs et leurs processus administratifs, tout en garantissant sécurité, traçabilité, ergonomie et évolutivité ?
+\end{quotation}
+
+\section{Objectifs du projet}
+Les objectifs fonctionnels et techniques du projet sont les suivants :
+\begin{itemize}
+    \item centraliser la gestion des dossiers collaborateurs ;
+    \item structurer l'organisation interne (départements et postes) ;
+    \item gérer les contrats de travail et leurs alertes d'échéance ;
+    \item automatiser les demandes et décomptes de congés ;
+    \item effectuer le suivi des absences et présences (pointage ARRIVER / PARTIR) ;
+    \item assurer la gestion et la classification des documents RH ;
+    \item traiter les demandes RH des employés avec suivi des statuts ;
+    \item notifier les utilisateurs en temps réel lors des événements clés ;
+    \item fournir un tableau de bord dynamique avec statistiques clés (KPI) ;
+    \item mettre en œuvre une gestion stricte des rôles et permissions ;
+    \item garantir la traçabilité via un journal d'audit des actions ;
+    \item développer une API REST structurée et évolutive.
+\end{itemize}
+
+\section{Périmètre fonctionnel}
+\begin{table}[H]
+\centering
+\caption{Périmètre fonctionnel de l'application}
+\label{tab:perimetre}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Module} & \textbf{Fonctionnalités principales} \\
+\midrule
+Authentification & Connexion sécurisée (JWT/Sanctum), déconnexion et réinitialisation de mot de passe \\
+Utilisateurs & Gestion des comptes, attribution des rôles et permissions \\
+Employés & Dossier personnel et professionnel, filtres, recherche et fiche détaillée \\
+Organisation & Gestion des départements et des postes \\
+Contrats & Types de contrats (CDI, CDD, Stage), dates, salaire, statut et échéances \\
+Congés & Demandes de congés, validation/refus RH, calcul des jours et gestion des soldes \\
+Absences & Déclaration d'absences, motifs et téléversement de justificatifs \\
+Présences & Pointage quotidien (ARRIVER / PARTIR), retards et durées d'activité \\
+Documents & Téléversement, consultation, téléchargement et classification sécurisée \\
+Demandes RH & Soumission de demandes administratives, traitement et suivi des statuts \\
+Notifications & Alerte sur congés, contrats, nouveaux documents et décisions \\
+Dashboard & Tableau de bord dynamique, cartes KPI et graphiques statistiques \\
+Rapports & Synthèse et export des données RH \\
+Audit & Traçabilité et historique complet des actions sensibles \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Acteurs}
+Le système s'articule autour de trois profils principaux :
+\begin{itemize}
+    \item \textbf{Administrateur :} gestion globale du système, configuration des utilisateurs, rôles, permissions et consultation du journal d'audit.
+    \item \textbf{Responsable RH :} gestion opérationnelle des collaborateurs, contrats, validation des congés, suivi des absences et présences, gestion des documents et demandes RH.
+    \item \textbf{Employé :} accès à son espace personnel (consultation de profil, solde de congés, pointage de présence, soumission de demandes RH et téléversement de documents).
+\end{itemize}
+
+\section{Besoins non fonctionnels}
+\begin{itemize}
+    \item \textbf{Sécurité :} contrôle d'accès basé sur les rôles (RBAC), validation stricte des formulaires backend, protection CSRF/XSS, hashage des mots de passe (Bcrypt).
+    \item \textbf{Ergonomie \& UI/UX :} interface moderne, épurée et réactive réalisée sous React.
+    \item \textbf{Responsive Design :} adaptabilité fluide sur ordinateurs, tablettes et mobiles.
+    \item \textbf{Maintenabilité :} séparation stricte Backend (Laravel REST API) / Frontend (React SPA).
+    \item \textbf{Traçabilité :} journalisation automatique des événements dans la table \texttt{audit\_logs}.
+    \item \textbf{Évolutivité :} architecture basée sur des micro-services/API REST conteneurisables avec Docker.
+\end{itemize}
+
+\section{Démarche itérative}
+Le projet suit une méthodologie itérative (Agile/Scrum). Le développement s'est effectué par Sprints successifs pour valider progressivement les modules.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        sprint/.style={rectangle, rounded corners=6pt, draw=blue!80!black, fill=blue!8, thick, minimum width=2.7cm, minimum height=1.6cm, align=center, font=\small},
+        arrow/.style={->, >=stealth, thick, color=blue!80!black}
+    ]
+        \node[sprint] (s0) {\textbf{Sprint 0}\\ \tiny Cadrage \& Conception\\ \tiny Setup React / Laravel};
+        \node[sprint, right=0.4cm of s0] (s1) {\textbf{Sprint 1}\\ \tiny Auth JWT / Sanctum\\ \tiny Rôles \& Permissions};
+        \node[sprint, right=0.4cm of s1] (s2) {\textbf{Sprint 2}\\ \tiny Gestion Employés\\ \tiny Départements \& Contrats};
+        \node[sprint, right=0.4cm of s2] (s3) {\textbf{Sprint 3}\\ \tiny Congés \& Soldes\\ \tiny Pointage Présences};
+        \node[sprint, right=0.4cm of s3] (s4) {\textbf{Sprint 4}\\ \tiny Dashboard KPI\\ \tiny Audit \& Docker};
+
+        \draw[arrow] (s0) -- (s1);
+        \draw[arrow] (s1) -- (s2);
+        \draw[arrow] (s2) -- (s3);
+        \draw[arrow] (s3) -- (s4);
+    \end{tikzpicture}
+    \caption{Organisation prévisionnelle et étapes du projet (Démarche Agile / Scrum)}
+    \label{fig:organisation_etapes}
+\end{figure}
+
+% ------------------------------------------
+% CHAPITRE 2
+% ------------------------------------------
+\chapter{Étude Fonctionnelle}
+
+\section{Identification des interactions}
+Les interactions sont découpées selon les trois profils d'utilisateurs. L'administrateur supervise la sécurité, le responsable RH orchestre la gestion opérationnelle et l'employé effectue ses démarches quotidiennes.
+
+\section{Diagramme global des cas d'utilisation}
+Le diagramme des cas d'utilisation présente la synthèse des fonctionnalités accessibles à chaque profil utilisateur.
+
+\safefigure{use_case_diagramme.png}{Diagramme général des cas d'utilisation}{fig:use_case}
+
+\noindent\textit{Remarque : l'authentification constitue une précondition transversale d'accès aux fonctionnalités protégées de l'application.}
+
+\section{Cas d'utilisation : demande de congé}
+
+\begin{table}[H]
+\centering
+\caption{Scénario nominal - Demander un congé}
+\label{tab:uc_conge}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Élément} & \textbf{Description} \\
+\midrule
+Acteur principal & Employé authentifié \\
+Précondition & Compte actif et solde de congés suffisant \\
+Déclencheur & L'employé soumet une demande de congé \\
+Scénario & Accès au module Congés, sélection du type de congé, saisie des dates de début et fin, calcul automatique des jours ouvrés et validation. \\
+Traitement système & Contrôle des dates, enregistrement au statut « En attente », notification automatique du Responsable RH. \\
+Alternative & En cas de solde insuffisant ou de dates chevauchantes, la demande est bloquée avec un message d'erreur d'explicatif. \\
+Postcondition & La demande est enregistrée et en attente d'approbation par le RH. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Règles métier essentielles}
+\begin{enumerate}
+    \item Le statut d'une demande de congé évolue parmi : \textit{En attente}, \textit{Acceptée}, \textit{Refusée}, \textit{Annulée}.
+    \item L'approbation d'un congé déduit automatiquement le nombre de jours du solde du collaborateur.
+    \item Les droits de validation et refus de demandes sont exclusivement réservés aux profils RH/Admin.
+    \item Un employé ne peut consulter et modifier que ses propres données personnelles.
+    \item Les fichiers joints (justificatifs, contrats, pièces) sont filtrés par taille et format autorisé.
+    \item La cohérence des dates (date de début $<$ date de fin) est vérifiée à la fois au niveau Frontend et Backend.
+\end{enumerate}
+
+\section{Cycle de vie d'une demande de congé}
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2.2cm and 3cm,
+        state/.style={rectangle, rounded corners=6pt, draw=blue!70!black, fill=blue!8, thick, inner sep=8pt, align=center, font=\small\bfseries, minimum width=2.8cm},
+        accepted/.style={rectangle, rounded corners=6pt, draw=green!60!black, fill=green!12, thick, inner sep=8pt, align=center, font=\small\bfseries, minimum width=2.8cm},
+        rejected/.style={rectangle, rounded corners=6pt, draw=red!70!black, fill=red!12, thick, inner sep=8pt, align=center, font=\small\bfseries, minimum width=2.8cm},
+        cancelled/.style={rectangle, rounded corners=6pt, draw=gray!70!black, fill=gray!12, thick, inner sep=8pt, align=center, font=\small\bfseries, minimum width=2.8cm},
+        arrow/.style={->, >=stealth, thick, color=blue!80!black}
+    ]
+        % Point de départ
+        \node[circle, fill=black, inner sep=3.5pt] (start) {};
+        
+        % État initial
+        \node[state, right=1.2cm of start] (pending) {En attente\\ \footnotesize(Décision RH)};
+        
+        % États finaux
+        \node[accepted, right=3cm of pending] (approved) {Acceptée\\ \footnotesize(Solde déduit)};
+        \node[rejected, above=1.2cm of approved] (rejected) {Refusée\\ \footnotesize(Motif enregistré)};
+        \node[cancelled, below=1.2cm of approved] (cancelled) {Annulée\\ \footnotesize(Par l'employé)};
+        
+        % Transitions / Flèches
+        \draw[arrow] (start) -- node[above, font=\tiny] {Soumission} (pending);
+        \draw[arrow] (pending) -- node[above, font=\footnotesize] {Validation RH} (approved);
+        \draw[arrow] (pending) |- node[above, font=\footnotesize] {Refus RH} (rejected);
+        \draw[arrow] (pending) |- node[below, font=\footnotesize] {Annulation} (cancelled);
+    \end{tikzpicture}
+    \caption{Cycle de vie simplifié d'une demande de congé}
+    \label{fig:cycle_vie_conge}
+\end{figure}
+
+% ------------------------------------------
+% CHAPITRE 3
+% ------------------------------------------
+\chapter{Étude Technique et Architecture}
+
+\section{Choix technologiques}
+L'application repose sur un Stack Web moderne et performant séparant le moteur Backend et l'interface utilisateur Frontend.
+
+\begin{table}[H]
+\centering
+\caption{Technologies retenues et rôles dans l'application}
+\label{tab:tech}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Technologie} & \textbf{Rôle dans l'application} \\
+\midrule
+PHP 8.2+ / Laravel 10+ & Framework Backend REST API, logique métier et ORM Eloquent \\
+React.js / Vite & Framework Frontend SPA pour des interfaces réactives et fluides \\
+MySQL 8.x & Base de données relationnelle centralisée \\
+Tailwind CSS / Vanilla CSS & Design moderne, responsive et composants stylisés \\
+Git & Gestionnaire de version du code source \\
+Docker / Docker Compose & Conteneurisation des services (Web, Backend, MySQL) \\
+Nginx & Serveur Web et Proxy inverse \\
+Postman & Validation et tests des endpoints API REST \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Architecture logique cible}
+L'architecture logicielle s'appuie sur le modèle MVC découplé :
+\begin{itemize}
+    \item \textbf{Frontend (React SPA) :} affichage des vues, gestion de l'état local et requêtes AJAX via Axios.
+    \item \textbf{Controllers \& Form Requests :} traitement des requêtes HTTP et validation stricte des entrées.
+    \item \textbf{Services \& Policies :} couche métier pour la gestion des soldes, alertes et règles d'accès.
+    \item \textbf{Models Eloquent :} cartographie relationnelle de la base de données MySQL.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        layer/.style={rectangle, rounded corners=8pt, draw=#1!80!black, fill=#1!10, thick, minimum width=0.85\textwidth, minimum height=1.2cm, align=center, font=\bfseries\small},
+        arrow/.style={<->, >=stealth, thick, color=gray!80!black}
+    ]
+        \node[layer=blue] (pres) {\color{blue!90!black}Couche Présentation (Frontend React SPA)\\ \normalfont\footnotesize React.js, Tailwind CSS, Axios, Vite, Components UI};
+        \node[layer=teal, below=0.5cm of pres] (app) {\color{teal!90!black}Couche Application (API REST Backend)\\ \normalfont\footnotesize Routes API, Controllers, Form Requests, Policies \& RBAC Middleware};
+        \node[layer=orange, below=0.5cm of app] (metier) {\color{orange!90!black}Couche Métier \& Services\\ \normalfont\footnotesize Services Métier, Logique des soldes, Notifications \& AuditLog};
+        \node[layer=purple, below=0.5cm of metier] (data) {\color{purple!90!black}Couche Accès aux Données \& SGBD\\ \normalfont\footnotesize Eloquent ORM, Migrations, Base de Données MySQL 8.x};
+
+        \draw[arrow] (pres) -- node[right, font=\tiny] {JSON / HTTPS} (app);
+        \draw[arrow] (app) -- (metier);
+        \draw[arrow] (metier) -- node[right, font=\tiny] {SQL / Eloquent} (data);
+    \end{tikzpicture}
+    \caption{Architecture logique cible en couches (React / Laravel / MySQL)}
+    \label{fig:arch_logique}
+\end{figure}
+
+\section{Architecture de déploiement cible}
+L'application est préparée pour un déploiement conteneurisé sous Docker comprenant Nginx, PHP-FPM et MySQL.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        container/.style={rectangle, rounded corners=6pt, draw=blue!80!black, fill=blue!5, thick, minimum width=3.2cm, minimum height=2cm, align=center, font=\small},
+        docker/.style={rectangle, rounded corners=10pt, draw=cyan!80!black, fill=cyan!5, dashed, thick, inner sep=12pt},
+        arrow/.style={<->, >=stealth, thick, color=blue!70!black}
+    ]
+        % Client
+        \node[rectangle, rounded corners=6pt, draw=gray!80!black, fill=gray!10, thick, minimum width=2.8cm, minimum height=1.1cm, align=center] (client) {\textbf{Client Web}\\ \footnotesize Navigateur / React};
+
+        % Conteneurs Docker
+        \node[container, right=1.6cm of client] (nginx) {\textbf{Conteneur Nginx}\\ \footnotesize Web Server / Proxy\\ \tiny Port 80 / 443};
+        \node[container, right=1.4cm of nginx] (php) {\textbf{Conteneur PHP-FPM}\\ \footnotesize Backend Laravel 10\\ \tiny API REST Engine};
+        \node[container, below=1.2cm of php] (db) {\textbf{Conteneur MySQL}\\ \footnotesize Base de données 8.x\\ \tiny Port 3306};
+
+        \draw[arrow] (client) -- node[above, font=\tiny] {HTTP / HTTPS} (nginx);
+        \draw[arrow] (nginx) -- node[above, font=\tiny] {FastCGI} (php);
+        \draw[arrow] (php) -- node[right, font=\tiny] {SQL} (db);
+
+        % Boîte Docker Compose
+        \begin{scope}[on background layer]
+            \node[docker, fit=(nginx) (php) (db), label=above:{\textbf{\color{cyan!90!black}Environnement Conteneurisé Docker Compose}}] {};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Architecture de déploiement Docker cible}
+    \label{fig:arch_deploiement}
+\end{figure}
+
+\section{Conception de l'API REST}
+L'ensemble des fonctionnalités communique à travers une API RESTful sécurisée.
+
+\begin{table}[H]
+\centering
+\caption{Principaux endpoints REST de l'application}
+\label{tab:api_endpoints}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Fonction} \\
+\midrule
+POST & \texttt{/api/login} & Authentification et génération du Token \\
+GET | POST & \texttt{/api/employees} & Lister et créer des collaborateurs \\
+GET | PUT & \texttt{/api/employees/\{id\}} & Consulter et modifier la fiche d'un employé \\
+GET | POST & \texttt{/api/leaves} & Consulter et soumettre des demandes de congés \\
+PUT & \texttt{/api/leaves/\{id\}/status} & Valider ou refuser un congé (RH) \\
+POST & \texttt{/api/attendance/check-in} & Pointer le début de journée (ARRIVER) \\
+POST & \texttt{/api/attendance/check-out} & Pointer la fin de journée (PARTIR) \\
+GET | POST & \texttt{/api/documents} & Téléverser et gérer les documents RH \\
+GET & \texttt{/api/notifications} & Consulter les notifications de l'utilisateur \\
+GET & \texttt{/api/dashboard/kpi} & Obtenir les indicateurs clés et statistiques RH \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Stratégie de gestion du code source}
+La gestion de version du projet suit la stratégie GitFlow :
+\begin{itemize}
+    \item \textbf{main :} code de production stable.
+    \item \textbf{develop :} branche d'intégration continue des fonctionnalités.
+    \item \textbf{feature/* :} branches de travail dédiées aux différents modules.
+\end{itemize}
+
+\begin{lstlisting}[language=bash, caption={Conventions de commits Git adoptées}, label={lst:git_commits}]
+feat: add employee management module
+feat: implement leave request approval workflow
+fix: recalculate leave balance on rejection
+\end{lstlisting}
+
+% ------------------------------------------
+% CHAPITRE 4
+% ------------------------------------------
+\chapter{Étude Conceptuelle et Modélisation}
+
+\section{Conception de la base de données}
+La base de données relationnelle est structurée autour des tables clés : \texttt{users}, \texttt{roles}, \texttt{permissions}, \texttt{employees}, \texttt{departments}, \texttt{positions}, \texttt{contracts}, \texttt{leave\_types}, \texttt{leave\_balances}, \texttt{leave\_requests}, \texttt{absences}, \texttt{attendances}, \texttt{documents}, \texttt{hr\_requests}, \texttt{notifications} et \texttt{audit\_logs}.
+
+\section{MCD / MLD de conception}
+Le modèle de données garantit l'intégrité référentielle entre les collaborateurs, leurs contrats, leurs demandes de congés, leurs pointages et l'historique d'audit.
+
+\section{Diagramme de classes}
+Le diagramme de classes de conception modélise les entités métier et leurs relations.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        class/.style={rectangle, rounded corners=3pt, draw=blue!80!black, fill=blue!5, thick, minimum width=3.2cm, align=left, font=\tiny, inner sep=4pt},
+        relation/.style={-, >=stealth, thick, color=gray!80!black, font=\tiny}
+    ]
+        % Classes principales
+        \node[class] (user) {\textbf{\centerline{User}}\\ \hrulefill\\ + id: int\\ + email: string\\ + password: string\\ + status: string};
+        \node[class, right=1.2cm of user] (emp) {\textbf{\centerline{Employee}}\\ \hrulefill\\ + id: int\\ + matricule: string\\ + nom: string\\ + prenom: string\\ + phone: string};
+        \node[class, above=0.8cm of emp] (dept) {\textbf{\centerline{Department}}\\ \hrulefill\\ + id: int\\ + name: string};
+        \node[class, right=1.2cm of dept] (pos) {\textbf{\centerline{Position}}\\ \hrulefill\\ + id: int\\ + title: string};
+        \node[class, right=1.2cm of emp] (contract) {\textbf{\centerline{HrContract}}\\ \hrulefill\\ + id: int\\ + type: string\\ + start\_date: date\\ + salary: decimal};
+        \node[class, below=1cm of emp] (leave) {\textbf{\centerline{HrLeaveRequest}}\\ \hrulefill\\ + id: int\\ + start\_date: date\\ + end\_date: date\\ + status: string};
+        \node[class, left=1.2cm of leave] (attendance) {\textbf{\centerline{HrAttendance}}\\ \hrulefill\\ + id: int\\ + date: date\\ + check\_in: time\\ + check\_out: time};
+        \node[class, right=1.2cm of leave] (doc) {\textbf{\centerline{HrDocument}}\\ \hrulefill\\ + id: int\\ + title: string\\ + path: string\\ + category: string};
+
+        % Relations
+        \draw[relation] (user) -- node[above] {1..1} (emp);
+        \draw[relation] (dept) -- node[left] {1} (emp);
+        \draw[relation] (dept) -- node[above] {1..*} (pos);
+        \draw[relation] (emp) -- node[above] {1..*} (contract);
+        \draw[relation] (emp) -- node[left] {1..*} (leave);
+        \draw[relation] (emp) -- node[above] {1..*} (attendance);
+        \draw[relation] (emp) -- node[above] {1..*} (doc);
+    \end{tikzpicture}
+    \caption{Diagramme de classes de conception}
+    \label{fig:diag_classes}
+\end{figure}
+
+\noindent\textbf{Cohérence métier :} un collaborateur est lié à un département, un poste, et possède plusieurs contrats, congés, absences et documents. Son solde annuel est tracé dans \texttt{LeaveBalance}.
+
+\section{Diagramme d'activité : traitement d'une demande de congé}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 2.2cm,
+        action/.style={rectangle, rounded corners=6pt, draw=blue!70!black, fill=blue!8, thick, inner sep=6pt, align=center, font=\small, minimum width=2.8cm},
+        decision/.style={diamond, draw=orange!90!black, fill=orange!15, thick, inner sep=2pt, align=center, font=\tiny},
+        end/.style={circle, draw=red!80!black, fill=red!20, thick, inner sep=3pt},
+        arrow/.style={->, >=stealth, thick, color=blue!80!black}
+    ]
+        \node[circle, fill=black, inner sep=3.5pt] (start) {};
+        \node[action, right=0.8cm of start] (submit) {Soumettre demande\\ de congé (Employé)};
+        \node[decision, right=1cm of submit] (checkSolde) {Solde\\ suffisant ?};
+        \node[action, above=0.8cm of checkSolde] (rejectSolde) {Afficher erreur\\ "Solde insuffisant"};
+        \node[action, right=1.2cm of checkSolde] (pending) {Enregistrer statut\\ "En attente"};
+        \node[action, right=1.2cm of pending] (rhDecision) {Décision du\\ Responsable RH};
+        \node[decision, below=1cm of rhDecision] (decision) {Accord ?};
+        \node[action, left=1.2cm of decision] (accepted) {Statut "Acceptée"\\ Déduire solde};
+        \node[action, right=1.2cm of decision] (refused) {Statut "Refusée"\\ Motif enregistré};
+        \node[end, below=0.8cm of accepted] (endNode) {};
+
+        \draw[arrow] (start) -- (submit);
+        \draw[arrow] (submit) -- (checkSolde);
+        \draw[arrow] (checkSolde) -- node[left, font=\tiny] {Non} (rejectSolde);
+        \draw[arrow] (checkSolde) -- node[above, font=\tiny] {Oui} (pending);
+        \draw[arrow] (pending) -- (rhDecision);
+        \draw[arrow] (rhDecision) -- (decision);
+        \draw[arrow] (decision) -- node[above, font=\tiny] {Oui} (accepted);
+        \draw[arrow] (decision) -- node[above, font=\tiny] {Non} (refused);
+        \draw[arrow] (accepted) -- (endNode);
+    \end{tikzpicture}
+    \caption{Diagramme d'activité : traitement d'une demande de congé}
+    \label{fig:act_conge}
+\end{figure}
+
+\section{Diagramme d'activité : gestion des présences}
+
+\safefigure{diagramme_activite_presences.png}{Activité : gestion des présences}{fig:act_presences}
+
+\section{Diagramme de séquence : authentification}
+
+\safefigure{diagramme_sequence_auth.png}{Séquence : authentification}{fig:seq_auth}
+
+\section{Diagramme de séquence : demande de congé}
+
+\safefigure{diagramme_sequence_conge.png}{Séquence : traitement d'une demande de congé}{fig:seq_conge}
+
+\section{Diagramme de séquence : gestion d'un collaborateur}
+
+\safefigure{diagramme_sequence_collaborateur.png}{Séquence : création d'un collaborateur}{fig:seq_collab}
+
+\section{Diagramme de séquence : pointage}
+
+\safefigure{diagramme_sequence_pointage.png}{Séquence : pointage d'une présence}{fig:seq_pointage}
+
+\section{Diagramme de composants}
+
+\safefigure{diagramme_composants.png}{Diagramme de composants du système}{fig:diag_composants}
+
+\section{Diagramme de déploiement}
+
+\safefigure{diagramme_deploiement.png}{Déploiement cible}{fig:diag_deploiement}
+
+\section{Cohérence entre les modèles}
+L'ensemble des diagrammes UML traduit une vision unifiée du système où la logique applicative Frontend React communique de manière transparente avec l'API Backend Laravel.
+
+% ------------------------------------------
+% CHAPITRE 5
+% ------------------------------------------
+\chapter{Réalisation et Prototypage}
+
+\section{Introduction}
+Ce chapitre présente les interfaces utilisateur réalisées pour l'application \textbf{HR Management System}, la mise en œuvre des principes UI/UX, les tests fonctionnels ainsi que la préparation du déploiement conteneurisé.
+
+\section{Interfaces réalisées et expérience utilisateur}
+L'application offre une interface moderne, intuitive et réactive conçue avec React et Tailwind CSS.
+
+\safefigure{stitch-dashboard.png}{Vue du tableau de bord RH principal avec indicateurs KPI}{fig:stitch_dashboard}
+
+\subsection{Principes UI/UX mis en œuvre}
+\begin{itemize}
+    \item Navigation latérale fluide et ergonomique ;
+    \item En-tête globale avec barre de recherche rapide, centre de notifications et profil ;
+    \item Cartes d'indicateurs KPI dynamiques (Nombre d'employés, congés à valider, présences du jour) ;
+    \item Tableaux de données intégrant filtrage instantané, recherche avancée et pagination ;
+    \item Badges de statut colorés pour une lisibilité immédiate.
+\end{itemize}
+
+\section{Interface d'authentification}
+Écran de connexion sécurisé contrôlant les identifiants et générant les jetons d'accès.
+
+\safefigure{login.png}{Interface de connexion au système}{fig:login_mockup}
+
+\section{Tableau de bord principal RH}
+Synthèse complète de la situation de l'entreprise avec graphiques interactifs et activités récentes.
+
+\safefigure{dashboard.png}{Tableau de bord RH et suivi analytique}{fig:dashboard_mockup}
+
+\section{Gestion des collaborateurs (Employés)}
+Interface de gestion complète des dossiers collaborateurs avec recherche et fiche détaillée.
+
+\safefigure{employees.png}{Liste des collaborateurs avec filtres et actions}{fig:employees_mockup}
+
+\safefigure{employee-detail.png}{Fiche détaillée d'un collaborateur}{fig:employee_detail_mockup}
+
+\section{Gestion des contrats et de la GED}
+Module de suivi des contrats de travail (CDI, CDD) et espace de gestion électronique de documents (GED).
+
+\safefigure{contracts-documents.png}{Interface de gestion des contrats et documents RH}{fig:contracts_docs_mockup}
+
+\section{Gestion des congés}
+Interface permettant aux employés de soumettre leurs congés et aux responsables RH d'approuver ou refuser les demandes.
+
+\safefigure{leaves.png}{Gestion des demandes et solde de congés}{fig:leaves_mockup}
+
+\section{Pointage et suivi des présences}
+Module de pointage quotidien (« ARRIVER » / « PARTIR ») avec calcul automatique des heures de présence et gestion des retards.
+
+\safefigure{attendance.png}{Interface de pointage et registre des présences}{fig:attendance_mockup}
+
+\section{Demandes RH et centre de notifications}
+Module de requêtes RH et panneau de notifications en temps réel.
+
+\safefigure{hr-requests.png}{Traitement des demandes RH}{fig:hr_requests_mockup}
+
+\safefigure{notifications.png}{Centre de notifications utilisateur}{fig:notifications_mockup}
+
+\section{Adaptabilité Responsive (Mobile \& Tablette)}
+L'interface s'adapte automatiquement sur les écrans tactiles et mobiles.
+
+\safefigure{mobile.png}{Adaptation responsive sur écran mobile}{fig:mobile_mockup}
+
+\section{Exigences de validation et de sécurité}
+Les mesures de sécurité appliquées sur l'application comprennent :
+\begin{itemize}
+    \item Validation rigoureuse des formulaires côté client et serveur ;
+    \item Protection contre les failles CSRF, XSS et injections SQL via Eloquent ORM ;
+    \item Authentification sécurisée par jetons JWT ;
+    \item Contrôle d'accès strict par rôle et permissions (RBAC) ;
+    \item Journalisation intégrale des actions dans le journal d'audit (\texttt{AuditLog}).
+\end{itemize}
+
+\section{Plan de tests fonctionnels et résultats}
+Des tests fonctionnels complets ont été exécutés avec succès sur l'ensemble des modules.
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des tests fonctionnels exécutés}
+\label{tab:plan_tests}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{ID} & \textbf{Scénario de test} & \textbf{Résultat obtenu} \\
+\midrule
+T01 & Connexion avec identifiants valides & Succès (Accès autorisé) \\
+T02 & Connexion avec mot de passe incorrect & Succès (Erreur affichée) \\
+T03 & Ajout d'un nouveau collaborateur & Succès (Employé créé) \\
+T04 & Soumission d'une demande de congé & Succès (Statut « En attente ») \\
+T05 & Soumission avec solde insuffisant & Succès (Demande bloquée) \\
+T06 & Validation d'un congé par le RH & Succès (Solde déduit) \\
+T07 & Pointage ARRIVER / PARTIR & Succès (Horodatage enregistré) \\
+T08 & Téléversement d'un document RH & Succès (Fichier classé) \\
+T09 & Accès employé à une zone réservée RH & Succès (Accès refusé 403) \\
+T10 & Génération des rapports statistiques & Succès (Données consolidées) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Environnement de déploiement Docker}
+L'application est conteneurisée à l'aide de Docker Compose pour garantir la reproductibilité et la simplicité de déploiement.
+
+\safefigure{docker.png}{Schéma de l'environnement conteneurisé Docker}{fig:docker_env}
+
+\section{Matrice de traçabilité des exigences}
+
+\begin{table}[H]
+\centering
+\caption{Matrice de traçabilité des exigences et réalisation}
+\label{tab:tracabilite}
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{Exigence} & \textbf{Module réalisé} & \textbf{Résultat} \\
+\midrule
+Authentification & Controller Auth + Sanctum & Conforme \& Opérationnel \\
+Gestion employés & Module Employee & Conforme \& Opérationnel \\
+Gestion contrats & Module Contract & Conforme \& Opérationnel \\
+Congés \& Soldes & Module Leave & Conforme \& Opérationnel \\
+Pointage présences & Module Attendance & Conforme \& Opérationnel \\
+GED Documents & Module Document & Conforme \& Opérationnel \\
+Demandes RH & Module HR Request & Conforme \& Opérationnel \\
+Notifications & System Notification & Conforme \& Opérationnel \\
+Tableau de bord & Component Dashboard KPI & Conforme \& Opérationnel \\
+API REST & Ensemble des Controllers API & Conforme \& Opérationnel \\
+Audit \& Sécurité & Middleware AuditLog \& RBAC & Conforme \& Opérationnel \\
+Docker & Fichier docker-compose.yml & Conforme \& Opérationnel \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------
+% CONCLUSION GENERALE
+% ------------------------------------------
+\chapter*{Conclusion Générale et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion Générale et Perspectives}
+
+Le stage effectué au sein de l'entreprise \textbf{Amsoft} a permis de mener à bien la conception et la réalisation complète de l'application web \textbf{HR Management System}. Le système répond directement aux besoins de centralisation, de digitalisation et de simplification de la gestion des ressources humaines.
+
+Grâce à l'utilisation d'une architecture moderne (React.js en Frontend, Laravel REST API en Backend, MySQL et Docker), la plateforme offre une expérience utilisateur fluide, un haut niveau de sécurité et une grande flexibilité d'évolution. L'ensemble des modules prévus (Gestion des employés, contrats, congés, présences, documents, demandes RH, notifications et audit) a été développé et validé par des tests fonctionnels.
+
+Ce projet m'a permis de consolider mes compétences en ingénierie logicielle, en développement Full-Stack découplé, en modélisation UML et en déploiement d'applications d'entreprise.
+
+\section*{Perspectives d'évolution}
+\begin{itemize}
+    \item Intégration d'un module de gestion de la paie et édition des bulletins de salaire ;
+    \item Signature électronique sécurisée des contrats de travail ;
+    \item Déploiement d'une application mobile native ou PWA pour le pointage des employés ;
+    \item Système de pointage géolocalisé ou par QR Code ;
+    \item Intégration de la visioconférence et gestion des entretiens annuels d'évaluation.
+\end{itemize}
+
+% ------------------------------------------
+% ANNEXES
+% ------------------------------------------
+\appendix
+\chapter{Structure fonctionnelle de référence}
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des principaux modules et responsabilités}
+\label{tab:annexe_modules}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Module} & \textbf{Responsabilités} \\
+\midrule
+Authentification & Connexion, déconnexion, sessions, récupération de mot de passe \\
+Utilisateurs & Comptes et droits d'accès \\
+Employés & Informations personnelles et professionnelles \\
+Départements & Organisation des équipes \\
+Postes & Référentiel des fonctions \\
+Contrats & Historique et échéances \\
+Congés & Demandes, validation et soldes \\
+Absences & Absences justifiées/non justifiées \\
+Présences & Arrivée, départ, retards \\
+Documents & Classement et gestion des fichiers \\
+Demandes RH & Création et traitement des demandes \\
+Notifications & Alertes et événements \\
+Dashboard & Indicateurs et graphiques \\
+Audit & Traçabilité des opérations \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\chapter{Checklist finale avant soutenance}
+
+\begin{itemize}
+    \item[\checkmark] Remplacer les maquettes réservées par les captures réelles de l'application (authentification, dashboard, collaborateurs, congés, pointage, documents, etc.).
+    \item[\checkmark] Ajouter le logo officiel d'Amsoft sur la page de garde.
+    \item[\checkmark] Régénérer et insérer les diagrammes UML \& architecture en haute résolution pour garantir leur parfaite lisibilité.
+    \item[\checkmark] Vérifier la conformité exacte des technologies (React 19, Laravel REST API, MySQL, Docker) et des fonctionnalités avec la codebase du projet.
+    \item[\checkmark] Développer la présentation de l'entreprise d'accueil Amsoft.
+    \item[\checkmark] Vérifier la numérotation des figures, tableaux, ainsi que la cohérence de la table des matières.
+\end{itemize}
+
+\end{document}
