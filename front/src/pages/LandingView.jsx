@@ -1,361 +1,644 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Users, 
-  ShieldCheck, 
   ArrowRight, 
   LogIn, 
   Briefcase, 
   Calendar, 
   Clock, 
   FolderOpen, 
-  FileCheck, 
-  CheckCircle2, 
   Sparkles, 
-  Check,
-  TrendingUp,
-  UserPlus
+  FileText,
+  ChevronRight
 } from 'lucide-react';
 
-const LandingView = ({ onGoToLogin }) => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+const LandingView = ({ onGoToLogin, onDirectDemoLogin }) => {
+  const [activeShowcaseTab, setActiveShowcaseTab] = useState('dashboard');
+
+  const heroBadgeVariant = {
+    hidden: { opacity: 0, y: -12 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
   };
 
-  const itemVariants = {
+  const heroTitleVariant = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: 'easeOut' }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45, delay: 0.1, ease: 'easeOut' } }
+  };
+
+  const heroDescVariant = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2, ease: 'easeOut' } }
+  };
+
+  const heroButtonsVariant = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.55, delay: 0.3, ease: 'easeOut' } }
+  };
+
+  const heroMockupVariant = {
+    hidden: { opacity: 0, scale: 0.96, y: 24 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.65, delay: 0.4, ease: [0.16, 1, 0.3, 1] } }
+  };
+
+  const sectionScrollVariant = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#F8F9FA] text-[#0F172A] font-sans selection:bg-[#0F766E] selection:text-white overflow-x-hidden">
-      {/* 1. BACKGROUND MESH GRADIENT & SUBTLE GRID PATTERN */}
-      <div className="absolute inset-0 bg-[radial-gradient(#0F766E_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.07] pointer-events-none -z-10"></div>
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[480px] bg-gradient-to-b from-[#0F766E]/20 via-[#0F172A]/10 to-transparent rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div className="landing-page relative min-h-screen bg-gradient-to-b from-[#0B1B33] via-[#071120] to-[#050B14] text-white font-sans selection:bg-[#14B8A6] selection:text-white overflow-x-hidden">
+      
+      {/* 1. OVERLAY GRID PERSPECTIVE & BLOBS TEAL/GOLD */}
+      <div className="absolute inset-0 grid-perspective pointer-events-none -z-10"></div>
+      <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#14B8A6]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+      <div className="absolute top-1/3 -left-40 w-96 h-96 bg-[#0F766E]/25 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 right-10 w-80 h-80 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
-      {/* 2. GLASSMORPHIC NAVBAR STICKY */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-6 sm:px-8 select-none">
-        <div className="max-w-6xl mx-auto h-16 flex items-center justify-between">
-          {/* Brand Logo */}
+      {/* 2. NAVBAR GLASS-DARK */}
+      <header className="sticky top-0 z-50 glass-dark border-b border-teal-500/20 px-6 sm:px-8 select-none">
+        <div className="max-w-7xl mx-auto h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-9 h-9 rounded-xl bg-[#0F766E] flex items-center justify-center text-white shrink-0 shadow-sm">
-              <Users className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-white shrink-0 shadow-glow-teal">
+              <Users className="w-6 h-6 text-white" />
             </div>
             <div>
-              <span className="font-bold text-base text-[#0F172A] tracking-tight block leading-none">
+              <span className="font-extrabold text-lg text-white tracking-tight block leading-none">
                 Amsoft People
               </span>
-              <span className="text-[11px] text-slate-500 font-medium mt-0.5 block">Gestion des collaborateurs</span>
+              <span className="text-[11px] text-teal-300/80 font-medium mt-1 block">Solution RH B2B High-Tech</span>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
-            <a href="#accueil" className="hover:text-[#0F766E] transition-colors">Accueil</a>
-            <a href="#fonctionnalites" className="hover:text-[#0F766E] transition-colors">Fonctionnalités</a>
-            <a href="#a-propos" className="hover:text-[#0F766E] transition-colors">À propos</a>
-            <a href="#aide" className="hover:text-[#0F766E] transition-colors">Aide</a>
+          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
+            <a href="#hero" className="hover:text-[#14B8A6] transition-colors">Accueil</a>
+            <a href="#fonctionnalites" className="hover:text-[#14B8A6] transition-colors">Fonctionnalités</a>
+            <a href="#comment-ca-marche" className="hover:text-[#14B8A6] transition-colors">Comment ça marche</a>
+            <a href="#apercu" className="hover:text-[#14B8A6] transition-colors">Aperçu Produit</a>
           </nav>
 
-          {/* Action CTA */}
           <div className="flex items-center gap-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(20,184,166,0.5)" }}
+              whileTap={{ scale: 0.98 }}
               onClick={onGoToLogin}
-              className="btn-secondary text-xs px-4 py-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer flex items-center gap-2"
+              className="glow-border text-xs px-5 py-2.5 font-bold text-white cursor-pointer flex items-center gap-2 rounded-lg transition-all duration-300"
             >
               <span>Se connecter</span>
-              <LogIn className="w-4 h-4" />
-            </button>
+              <LogIn className="w-4 h-4 text-teal-300" />
+            </motion.button>
           </div>
         </div>
       </header>
 
-      {/* 3. HERO SECTION VERTICALE AVEC HERO MOCKUP 3D PERSPECTIVE & DISCRET MESH */}
-      <section id="accueil" className="pt-16 pb-20 max-w-6xl mx-auto px-6 text-center">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="space-y-8"
-        >
-          {/* Badge */}
-          <motion.div variants={itemVariants} className="flex justify-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0F766E]/10 border border-[#0F766E]/20 rounded-full text-xs font-bold text-[#0F766E] tracking-wider uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#0F766E] animate-pulse"></span>
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Plateforme RH Épurée &amp; Unifiée</span>
+      {/* 3. HERO SECTION SOMBRE AVEC TEXT-GRADIENT-PREMIUM ULTRA LUMINEUX & MOCKUP VISIBLE */}
+      <section id="hero" className="relative pt-16 sm:pt-24 pb-24 max-w-7xl mx-auto px-6 text-center">
+        <div className="space-y-10">
+          
+          <motion.div initial="hidden" animate="visible" variants={heroBadgeVariant} className="flex justify-center">
+            <div className="glass-dark px-4 py-2 rounded-full border border-teal-500/30 text-xs font-bold text-teal-300 tracking-wider uppercase inline-flex items-center gap-2.5 shadow-glow-teal">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#14B8A6] animate-ping"></span>
+              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <span>Logiciel RH B2B SaaS Premium</span>
             </div>
           </motion.div>
 
-          {/* Titre Inter 800 Extra-Bold */}
-          <motion.div variants={itemVariants}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0F172A] tracking-tight leading-[1.15] max-w-4xl mx-auto">
-              La gestion des ressources humaines, <br className="hidden sm:inline" /> simple et centralisée.
+          <motion.div initial="hidden" animate="visible" variants={heroTitleVariant}>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gradient-premium tracking-tight leading-[1.1] max-w-5xl mx-auto drop-shadow-[0_0_35px_rgba(20,184,166,0.35)]">
+              La gestion des ressources humaines, simple et centralisée.
             </h1>
           </motion.div>
 
-          {/* Sous-titre */}
-          <motion.div variants={itemVariants}>
-            <p className="text-sm sm:text-base text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
-              Gérez l'ensemble de vos collaborateurs, contrats, demandes de congés, suivis de présences et documents RH depuis un espace unique, moderne et sécurisé.
+          <motion.div initial="hidden" animate="visible" variants={heroDescVariant}>
+            <p className="text-base sm:text-lg text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed">
+              Pilotez vos effectifs, contrats, demandes de congés, pointages en temps réel et coffre-fort documentaire dans une plateforme au design épuré et ultra-performant.
             </p>
           </motion.div>
 
-          {/* Bouton CTA Principal Sarcelle */}
-          <motion.div variants={itemVariants} className="pt-2 flex justify-center">
-            <button
+          <motion.div initial="hidden" animate="visible" variants={heroButtonsVariant} className="pt-2 flex items-center justify-center gap-5 flex-wrap">
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 0 35px rgba(20,184,166,0.6)" }}
+              whileTap={{ scale: 0.98 }}
               onClick={onGoToLogin}
-              className="btn-primary px-8 py-3.5 text-sm font-semibold flex items-center gap-2.5 shadow-lg shadow-[#0F766E]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="btn-primary bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#0F766E] px-8 py-4 text-xs sm:text-sm font-extrabold flex items-center gap-3 text-white rounded-xl shadow-glow-teal cursor-pointer transition-all duration-300"
             >
               <span>Accéder à l'Espace RH</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              <ArrowRight className="w-5 h-5 text-white" />
+            </motion.button>
+
+            <motion.a
+              whileHover={{ scale: 1.05, borderColor: "rgba(20,184,166,0.6)" }}
+              whileTap={{ scale: 0.98 }}
+              href="#fonctionnalites"
+              className="glass-dark text-slate-200 px-7 py-4 text-xs sm:text-sm font-bold flex items-center gap-2.5 rounded-xl border border-teal-500/30 hover:text-white transition-all duration-300 cursor-pointer"
+            >
+              <span>Découvrir les fonctionnalités</span>
+              <ChevronRight className="w-4 h-4 text-teal-400" />
+            </motion.a>
           </motion.div>
 
-          {/* HERO MOCKUP INTERFACE FLOTTANTE AVEC PERSPECTIVE 3D & PERSPECTIVE 1000px */}
-          <motion.div
-            variants={itemVariants}
-            className="pt-8 max-w-4xl mx-auto"
+          {/* DASHBOARD MOCKUP (GLASS-DARK + GLOW-BORDER + AJUSTEMENT 4 KPI BG-WHITE/10) */}
+          <motion.div 
+            initial="hidden" 
+            animate="visible" 
+            variants={heroMockupVariant} 
+            className="pt-8 max-w-6xl mx-auto relative"
           >
-            <div className="relative group [perspective:1000px]">
-              {/* Backlight Glow Halo behind mockup */}
-              <div className="absolute -inset-2 bg-gradient-to-r from-[#0F766E]/30 to-[#0F172A]/30 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-[#14B8A6]/30 via-[#D4AF37]/20 to-[#0F766E]/30 rounded-3xl blur-2xl pointer-events-none"></div>
 
-              {/* Floating Mockup Container with 3D Perspective */}
-              <div 
-                className="relative rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-xl p-5 sm:p-7 shadow-2xl transition-transform duration-700 ease-out transform group-hover:rotate-x-0 group-hover:scale-[1.01] text-left"
-                style={{ transform: 'perspective(1000px) rotateX(2deg)' }}
-              >
-                {/* Header Window Bar */}
-                <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-slate-300"></span>
-                    <span className="w-3 h-3 rounded-full bg-slate-200"></span>
-                    <span className="w-3 h-3 rounded-full bg-slate-200"></span>
-                    <span className="text-[11px] font-mono text-slate-400 ml-2">app.amsoft-people.ma/dashboard</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-400 text-xs">
-                    <span className="w-2 h-2 rounded-full bg-[#0F766E]"></span>
-                    <span className="font-mono text-[10px] text-slate-500">Espace RH Actif</span>
-                  </div>
+            <div className="relative rounded-3xl glass-dark glow-border p-6 sm:p-8 text-left shadow-glow-teal overflow-hidden">
+              
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-teal-500/20">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3.5 h-3.5 rounded-full bg-rose-500/80"></span>
+                  <span className="w-3.5 h-3.5 rounded-full bg-amber-500/80"></span>
+                  <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/80"></span>
+                  <span className="text-xs font-mono text-slate-300 ml-3">app.amsoft-people.ma/dashboard</span>
                 </div>
-
-                {/* Dashboard View Preview Component */}
-                <div className="space-y-5 select-none">
-                  {/* Top Bar Greeting */}
-                  <div className="flex items-center justify-between bg-slate-50/80 p-4 rounded-xl border border-slate-100">
-                    <div>
-                      <div className="text-[10px] uppercase font-bold text-[#0F766E] tracking-wider">Dashboard RH</div>
-                      <div className="text-base font-extrabold text-[#0F172A]">Bonjour, Fatine</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1.5 bg-[#0F766E] text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-xs">
-                        <UserPlus className="w-3.5 h-3.5" />
-                        <span>+ Ajouter un employé</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Task List Mockup */}
-                  <div className="border border-slate-200/80 rounded-xl divide-y divide-slate-100 bg-white">
-                    <div className="p-3.5 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-3">
-                        <span className="px-2.5 py-0.5 bg-[#0F766E]/10 text-[#0F766E] rounded font-bold font-mono text-[11px]">12</span>
-                        <span className="font-bold text-[#0F172A]">12 Demandes de congés en attente</span>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-[#0F766E]" />
-                    </div>
-                    <div className="p-3.5 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-3">
-                        <span className="px-2.5 py-0.5 bg-[#0F172A]/10 text-[#0F172A] rounded font-bold font-mono text-[11px]">5</span>
-                        <span className="font-bold text-[#0F172A]">5 Contrats à échéance dans 30 jours</span>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-[#0F766E]" />
-                    </div>
-                  </div>
-
-                  {/* Metrics Row Mockup with Sparklines */}
-                  <div className="grid grid-cols-4 gap-3 text-center">
-                    <div className="p-3 bg-slate-50/80 border border-slate-100 rounded-xl flex items-center justify-between">
-                      <div className="text-left">
-                        <div className="text-[10px] text-slate-500 font-medium">Employés</div>
-                        <div className="text-base font-mono font-extrabold text-[#0F172A]">248</div>
-                      </div>
-                      <svg className="w-10 h-5 text-[#0F766E]" viewBox="0 0 40 20" fill="none">
-                        <path d="M0 15 Q10 12, 20 8 T40 2" stroke="currentColor" strokeWidth="2" fill="none" />
-                      </svg>
-                    </div>
-
-                    <div className="p-3 bg-slate-50/80 border border-slate-100 rounded-xl flex items-center justify-between">
-                      <div className="text-left">
-                        <div className="text-[10px] text-slate-500 font-medium">Congés</div>
-                        <div className="text-base font-mono font-extrabold text-[#0F766E]">12</div>
-                      </div>
-                      <svg className="w-10 h-5 text-[#0F766E]" viewBox="0 0 40 20" fill="none">
-                        <path d="M0 5 Q10 15, 20 8 T40 12" stroke="currentColor" strokeWidth="2" fill="none" />
-                      </svg>
-                    </div>
-
-                    <div className="p-3 bg-slate-50/80 border border-slate-100 rounded-xl flex items-center justify-between">
-                      <div className="text-left">
-                        <div className="text-[10px] text-slate-500 font-medium">Absences</div>
-                        <div className="text-base font-mono font-extrabold text-[#0F172A]">8</div>
-                      </div>
-                      <svg className="w-10 h-5 text-slate-400" viewBox="0 0 40 20" fill="none">
-                        <path d="M0 10 Q10 8, 20 14 T40 6" stroke="currentColor" strokeWidth="2" fill="none" />
-                      </svg>
-                    </div>
-
-                    <div className="p-3 bg-slate-50/80 border border-slate-100 rounded-xl flex items-center justify-between">
-                      <div className="text-left">
-                        <div className="text-[10px] text-slate-500 font-medium">Échéances</div>
-                        <div className="text-base font-mono font-extrabold text-slate-700">5</div>
-                      </div>
-                      <svg className="w-10 h-5 text-slate-400" viewBox="0 0 40 20" fill="none">
-                        <path d="M0 18 Q10 10, 20 12 T40 4" stroke="currentColor" strokeWidth="2" fill="none" />
-                      </svg>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-300 text-xs font-bold border border-teal-500/30">
+                    <span className="w-2 h-2 rounded-full bg-[#14B8A6] animate-pulse"></span>
+                    Système RH Temps Réel
+                  </span>
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                <div className="md:col-span-8 space-y-5">
+                  {/* AJUSTEMENT 4 : CARTES KPI AVEC BG-WHITE/10 ET BORDER-WHITE/15 POUR UNE VISIBILITÉ ACCRUE */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                    <motion.div 
+                      whileHover={{ y: -4, scale: 1.02 }} 
+                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
+                    >
+                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Effectif Total</div>
+                      <div className="flex items-baseline justify-between mt-2">
+                        <span className="text-2xl font-mono font-extrabold text-white">248</span>
+                        <span className="text-xs font-bold text-emerald-400">+12%</span>
+                      </div>
+                      <div className="text-[10px] text-slate-300 font-medium mt-1">Actifs en poste</div>
+                    </motion.div>
+
+                    <motion.div 
+                      whileHover={{ y: -4, scale: 1.02 }} 
+                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
+                    >
+                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Congés Attente</div>
+                      <div className="flex items-baseline justify-between mt-2">
+                        <span className="text-2xl font-mono font-extrabold text-[#14B8A6]">12</span>
+                        <span className="text-xs font-bold text-[#14B8A6]">À valider</span>
+                      </div>
+                      <div className="text-[10px] text-slate-300 font-medium mt-1">Demandes reçues</div>
+                    </motion.div>
+
+                    <motion.div 
+                      whileHover={{ y: -4, scale: 1.02 }} 
+                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
+                    >
+                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Absences Jour</div>
+                      <div className="flex items-baseline justify-between mt-2">
+                        <span className="text-2xl font-mono font-extrabold text-white">8</span>
+                        <span className="text-xs font-bold text-slate-300 font-medium">Justifiées</span>
+                      </div>
+                      <div className="text-[10px] text-slate-300 font-medium mt-1">Maladie / Autoris.</div>
+                    </motion.div>
+
+                    <motion.div 
+                      whileHover={{ y: -4, scale: 1.02 }} 
+                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
+                    >
+                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Échéances CDD</div>
+                      <div className="flex items-baseline justify-between mt-2">
+                        <span className="text-2xl font-mono font-extrabold text-[#D4AF37]">5</span>
+                        <span className="text-xs font-bold text-[#D4AF37]">30 jours</span>
+                      </div>
+                      <div className="text-[10px] text-slate-300 font-medium mt-1">Fin de CDD / Essai</div>
+                    </motion.div>
+                  </div>
+
+                  {/* AJUSTEMENT 4 : TABLEAU DES DEMANDES EN BG-WHITE/10 */}
+                  <div className="bg-white/10 border border-white/15 rounded-xl p-5 space-y-4 backdrop-blur-md">
+                    <div className="flex items-center justify-between text-xs pb-3 border-b border-white/15">
+                      <span className="font-bold text-white uppercase tracking-wider text-xs">Dernières Demandes RH À Traiter</span>
+                      <span className="text-xs font-semibold text-[#14B8A6]">Direct Sync</span>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs">
+                      <motion.div 
+                        whileHover={{ y: -2 }}
+                        className="p-3 bg-[#0B1B33]/90 rounded-xl flex items-center justify-between border border-teal-500/20 hover:border-teal-400/40 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-9 h-9 rounded-full bg-[#14B8A6]/20 text-[#14B8A6] font-bold text-xs flex items-center justify-center border border-[#14B8A6]/40">
+                            AB
+                          </div>
+                          <div>
+                            <div className="font-bold text-white">Ahmed Benali</div>
+                            <div className="text-[11px] text-slate-300 font-medium">Congé annuel • 8 jours (01/10 au 10/10)</div>
+                          </div>
+                        </div>
+                        <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 font-bold text-[10px] rounded-md border border-amber-500/40">
+                          En attente RH
+                        </span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="md:col-span-4 space-y-4">
+                  <motion.div 
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                    className="p-5 bg-gradient-to-br from-[#0B1B33] to-[#050B14] text-white rounded-xl border border-teal-500/50 space-y-3 shadow-glow-teal"
+                  >
+                    <div className="flex items-center justify-between text-xs text-teal-300 font-semibold tracking-wider">
+                      <span>MODULE POINTAGE</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#14B8A6] animate-ping"></span>
+                    </div>
+                    <div className="font-mono text-3xl font-extrabold text-white text-gradient-premium">08:45:12</div>
+                    <div className="text-xs text-slate-200 font-medium">Pointage enregistré pour 240 collaborateurs aujourd'hui</div>
+                  </motion.div>
+                </div>
+              </div>
+
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          4. SECTION FONCTIONNALITÉS (AJUSTEMENT 2: BORDER-Y BORDER-TEAL-500/10)
+         ==================================================================== */}
+      <section id="fonctionnalites" className="py-24 bg-[#050B14] border-y border-teal-500/10 relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={sectionScrollVariant}
+          className="max-w-7xl mx-auto px-6 sm:px-8"
+        >
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Modules &amp; Fonctionnalités RH</h2>
+            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Tout ce dont votre service RH a besoin
+            </p>
+            <p className="text-sm sm:text-base text-slate-300 font-medium">
+              Une suite complète d'outils interconnectés pour piloter vos effectifs avec rigueur et précision.
+            </p>
+          </div>
+
+          {/* Bento Editorial Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {/* Feature 1: Large Primary Bento Card */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="md:col-span-8 glass-dark border border-teal-500/20 rounded-3xl p-7 sm:p-9 space-y-6 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
+            >
+              <div className="flex items-start justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
+                  <Users className="w-6 h-6" />
+                </div>
+                {/* AJUSTEMENT 3 : BADGE MODULE CENTRAL AVEC GLASS-DARK & BORDER TEAL-500/40 */}
+                <span className="px-3 py-1 glass-dark text-teal-300 rounded-full text-[10px] font-bold uppercase tracking-wider border border-teal-500/40">
+                  Module Central
+                </span>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white tracking-tight mb-3">Gestion des Collaborateurs &amp; Registre Unique</h3>
+                <p className="text-sm text-slate-300 leading-relaxed font-medium">
+                  Centralisez les dossiers individuels, coordonnées, fonctions, salaires bruts et statuts administratifs de chaque employé avec une recherche multicritères instantanée.
+                </p>
+              </div>
+
+              {/* Roster Mini UI Preview */}
+              <div className="p-4 bg-[#050B14]/80 border border-teal-500/20 rounded-2xl space-y-3 text-xs">
+                <div className="flex items-center justify-between font-mono text-slate-400 font-medium pb-2 border-b border-teal-500/15">
+                  <span>MATRICULE • NOM</span>
+                  <span>DEPARTEMENT</span>
+                  <span>STATUT</span>
+                </div>
+                <div className="flex items-center justify-between py-1.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white text-xs font-bold flex items-center justify-center">AB</div>
+                    <span className="font-bold text-white">Ahmed Benali</span>
+                  </div>
+                  <span className="text-slate-300 font-medium">Tech / Informatique</span>
+                  <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-500/30">Actif</span>
+                </div>
+                <div className="flex items-center justify-between py-1.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center">FA</div>
+                    <span className="font-bold text-white">Fatine Alaoui</span>
+                  </div>
+                  <span className="text-slate-300 font-medium">Ressources Humaines</span>
+                  <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-500/30">Actif</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 2: Congés & Absences */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 sm:p-9 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300 flex flex-col justify-between"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold mb-5 shadow-glow-teal">
+                  <Calendar className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-white tracking-tight mb-2">Congés, RTT &amp; Absences</h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                  Circuit de validation des demandes de congé annuel, maladie ou exceptionnel avec calcul automatique du solde restant.
+                </p>
+              </div>
+
+              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-amber-400" />
+                  <span className="font-bold text-amber-300">Demande en attente</span>
+                </div>
+                <span className="font-mono text-xs font-bold text-amber-200">CONG-2026-001</span>
+              </div>
+            </motion.div>
+
+            {/* Feature 3: Pointage Temps Réel */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
+                <Clock className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Pointage &amp; Suivi des Présences</h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                Enregistrement des heures d'arrivée, décompte des heures de travail et détection des retards.
+              </p>
+              <div className="pt-3 flex items-center justify-between text-xs font-mono border-t border-teal-500/15">
+                <span className="text-slate-400">Total Cumulé :</span>
+                <span className="font-bold text-[#14B8A6]">8h 30m / jour</span>
+              </div>
+            </motion.div>
+
+            {/* Feature 4: Coffre-Fort Documents */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
+                <FolderOpen className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Documents &amp; Attestations</h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                Stockage sécurisé des contrats PDF, CIN, diplômes et génération d'attestations de travail en 1 clic.
+              </p>
+              <div className="pt-3 flex items-center justify-between text-xs border-t border-teal-500/15">
+                <span className="text-slate-400 font-medium">Contrat_CDI.pdf</span>
+                <span className="text-[10px] font-mono font-bold text-[#14B8A6]">Signé</span>
+              </div>
+            </motion.div>
+
+            {/* Feature 5: Suivi des Contrats & Échéances */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
+                <Briefcase className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Suivi des Contrats &amp; Essais</h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                Alertes automatiques pour les renouvellements de CDD et fins de périodes d'essai.
+              </p>
+              <div className="pt-3 flex items-center justify-between text-xs border-t border-teal-500/15">
+                <span className="text-slate-400 font-medium">Alerte Remplacement</span>
+                <span className="text-[10px] font-mono font-bold text-[#D4AF37]">Dans 30 jours</span>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
       </section>
 
-      {/* 4. SECTION FONCTIONNALITÉS (Grille de 3 colonnes) */}
-      <section id="fonctionnalites" className="py-20 bg-white/60 backdrop-blur-md border-y border-slate-200/80">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14 space-y-2">
-            <h2 className="text-[12px] font-bold text-[#0F766E] uppercase tracking-wider">Modules RH Essentiels</h2>
-            <p className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-              Une gestion centralisée &amp; fluide
+      {/* ====================================================================
+          5. SECTION "COMMENT ÇA MARCHE" (AJUSTEMENT 2: BG-[#071120] & BORDER-Y BORDER-TEAL-500/10)
+         ==================================================================== */}
+      <section id="comment-ca-marche" className="py-24 bg-[#071120] border-y border-teal-500/10 relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={sectionScrollVariant}
+          className="max-w-7xl mx-auto px-6 sm:px-8"
+        >
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Comment Ça Marche</h2>
+            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Déploiement simple &amp; prise en main immédiate
             </p>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Tous vos outils de pilotage RH regroupés dans une interface unifiée.
+            <p className="text-sm sm:text-base text-slate-300 font-medium">
+              Quatre étapes claires pour structurer la gestion de vos ressources humaines.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
               {
-                icon: Users,
-                title: 'Gestion des Employés',
-                desc: 'Dossiers individuels des collaborateurs, informations personnelles, coordonnées et suivi de statut.'
+                step: '01',
+                title: 'Centralisez vos collaborateurs',
+                desc: 'Importez les fiches de vos employés, leurs postes, départements et contrats de travail.'
               },
               {
-                icon: Briefcase,
-                title: 'Suivi des Contrats',
-                desc: 'Gestion des CDI, CDD, périodes d\'essai et rappels automatiques des fins de contrat.'
+                step: '02',
+                title: 'Gérez congés & présences',
+                desc: 'Permettez aux équipes de soumettre leurs demandes et suivez les pointages au quotidien.'
               },
               {
-                icon: Calendar,
-                title: 'Congés & RTT',
-                desc: 'Soumission des demandes en ligne et circuit de validation rapide pour les responsables RH.'
+                step: '03',
+                title: 'Suivez vos indicateurs RH',
+                desc: 'Consultez les statistiques d\'effectif, taux de présence et solde de congés en temps réel.'
               },
               {
-                icon: Clock,
-                title: 'Suivi des Absences',
-                desc: 'Enregistrement des arrêt maladies, absences justifiées et suivi des autorisations.'
-              },
-              {
-                icon: FileCheck,
-                title: 'Présences & Pointages',
-                desc: 'Suivi des heures de présence, pointages quotidiens et décompte de la durée effective.'
-              },
-              {
-                icon: FolderOpen,
-                title: 'Documents & Demandes',
-                desc: 'Gestion documentaire sécurisée et délivrance rapide d\'attestations administratives.'
+                step: '04',
+                title: 'Organisez les documents',
+                desc: 'Émettez les attestations administratives et conservez vos pièces jointes en sécurité.'
               }
-            ].map((item, idx) => {
-              const IconComp = item.icon;
-              return (
-                <div
-                  key={idx}
-                  className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl p-8 space-y-4 hover:border-[#0F766E]/40 hover:-translate-y-1 transition-all duration-200"
-                >
-                  <div className="w-11 h-11 rounded-xl bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center font-bold">
-                    <IconComp className="w-5 h-5 text-[#0F766E]" />
-                  </div>
-                  <h3 className="font-bold text-base text-[#0F172A] tracking-tight">{item.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.desc}</p>
-                </div>
-              );
-            })}
+            ].map((st, idx) => (
+              <motion.div 
+                key={idx} 
+                whileHover={{ y: -5, scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+                className="glass-dark border border-teal-500/20 rounded-2xl p-7 space-y-4 hover:border-teal-400/50 transition-all shadow-soft hover:shadow-glow-teal"
+              >
+                <div className="text-3xl font-mono font-extrabold text-[#14B8A6] text-gradient-premium">{st.step}</div>
+                <h3 className="font-bold text-base text-white tracking-tight">{st.title}</h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">{st.desc}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* 5. À PROPOS / PRÉSENTATION INSTITUTIONNELLE */}
-      <section id="a-propos" className="py-20 max-w-5xl mx-auto px-6 sm:px-8">
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl p-8 sm:p-12 space-y-6">
-          <div className="max-w-3xl space-y-3">
-            <h2 className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">À propos d'Amsoft People</h2>
-            <h3 className="text-2xl font-extrabold text-[#0F172A] tracking-tight">Un outil conçu pour simplifier le travail RH quotidien</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              Amsoft People est la solution interne de gestion des collaborateurs conçue pour offrir aux responsables RH et aux équipes de direction une visibilité claire, fiable et centralisée sur l'ensemble des effectifs.
+      {/* ====================================================================
+          6. PRODUCT SHOWCASE DEMO SWITCHER (AJUSTEMENT 2: BG-[#050B14] & BORDER-Y BORDER-TEAL-500/10)
+         ==================================================================== */}
+      <section id="apercu" className="py-24 bg-[#050B14] border-y border-teal-500/10 relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={sectionScrollVariant}
+          className="max-w-7xl mx-auto px-6 sm:px-8 space-y-12"
+        >
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Démonstration Produit</h2>
+            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Découvrez l'interface en action
+            </p>
+            <p className="text-sm sm:text-base text-slate-300 font-medium">
+              Chaque espace est conçu pour maximiser l'efficacité des équipes RH.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-100 text-xs">
-            <div className="flex items-center gap-3 text-slate-700 font-semibold">
-              <CheckCircle2 className="w-5 h-5 text-[#0F766E]" />
-              <span>Visualisation claire &amp; synthétique</span>
-            </div>
-            <div className="flex items-center gap-3 text-slate-700 font-semibold">
-              <CheckCircle2 className="w-5 h-5 text-[#0F766E]" />
-              <span>Traitement rapide des demandes</span>
-            </div>
-            <div className="flex items-center gap-3 text-slate-700 font-semibold">
-              <CheckCircle2 className="w-5 h-5 text-[#0F766E]" />
-              <span>Sécurité &amp; confidentialité des données</span>
-            </div>
+          {/* Interactive Switcher Tabs */}
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            {[
+              { id: 'dashboard', label: 'Tableau de Bord RH' },
+              { id: 'employees', label: 'Annuaire Collaborateurs' },
+              { id: 'leaves', label: 'Gestion des Congés' },
+              { id: 'documents', label: 'Coffre-fort Documents' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveShowcaseTab(tab.id)}
+                className={`px-5 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                  activeShowcaseTab === tab.id
+                    ? 'bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white shadow-glow-teal border border-teal-400/40'
+                    : 'glass-dark text-slate-300 hover:text-white hover:border-teal-500/30'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
-        </div>
+
+          {/* Live Showcase Preview Box with Smooth Tab Transition */}
+          <div className="max-w-5xl mx-auto glass-dark border border-teal-500/30 rounded-3xl p-7 sm:p-9 shadow-glow-teal text-left">
+            {activeShowcaseTab === 'dashboard' && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
+                <div className="flex items-center justify-between text-xs border-b border-teal-500/20 pb-4">
+                  <span className="font-bold text-white text-sm">Vue d'ensemble analytique</span>
+                  <span className="text-xs text-teal-300 font-mono">Données consolidées 2026</span>
+                </div>
+                <div className="grid grid-cols-3 gap-5 text-center">
+                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
+                    <div className="text-xs text-slate-400 font-semibold uppercase">Effectif global</div>
+                    <div className="text-3xl font-mono font-extrabold text-white mt-1">248</div>
+                  </div>
+                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
+                    <div className="text-xs text-slate-400 font-semibold uppercase">Taux de présence</div>
+                    <div className="text-3xl font-mono font-extrabold text-[#14B8A6] mt-1">96.8%</div>
+                  </div>
+                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
+                    <div className="text-xs text-slate-400 font-semibold uppercase">Demandes ouvertes</div>
+                    <div className="text-3xl font-mono font-extrabold text-[#D4AF37] mt-1">12</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeShowcaseTab === 'employees' && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
+                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Extrait de l'annuaire du personnel</div>
+                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white font-bold text-xs flex items-center justify-center">AB</div>
+                    <div>
+                      <div className="font-bold text-white text-sm">Ahmed Benali (EMP-0001)</div>
+                      <div className="text-xs text-slate-400">Lead Développeur • CDI • Casablanca</div>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-emerald-500/15 text-emerald-400 font-bold text-xs rounded-md border border-emerald-500/30">Actif</span>
+                </div>
+              </motion.div>
+            )}
+
+            {activeShowcaseTab === 'leaves' && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
+                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Module de gestion des congés</div>
+                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-white text-sm">Congé Annuel (Repos fin de projet)</div>
+                    <div className="text-xs text-slate-400 mt-0.5">Collaborateur : Ahmed Benali • 8 jours autorisés</div>
+                  </div>
+                  <span className="px-3 py-1 bg-amber-500/15 text-amber-300 font-bold text-xs rounded-md border border-amber-500/30">En attente</span>
+                </div>
+              </motion.div>
+            )}
+
+            {activeShowcaseTab === 'documents' && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
+                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Coffre-fort documentaire sécurisé</div>
+                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-[#14B8A6]" />
+                    <span className="font-medium text-white text-sm">Contrat_Travail_CDI_Signed.pdf</span>
+                  </div>
+                  <span className="text-xs font-mono text-slate-400">1.25 MB</span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
       </section>
 
-      {/* 6. AIDE & SUPPORT */}
-      <section id="aide" className="py-16 bg-white/80 border-t border-slate-200/80">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-4">
-          <h2 className="text-xl font-extrabold text-[#0F172A] tracking-tight">Besoin d'assistance pour vous connecter ?</h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium">
-            Si vous rencontrez des difficultés d'accès ou souhaitez obtenir vos identifiants, contactez votre administrateur RH.
+      {/* ====================================================================
+          7. FINAL CTA BANNER & FOOTER (AJUSTEMENT 5: FOOTER AVEC DÉGRADÉ FROM-[#050B14] TO-[#0B1B33])
+         ==================================================================== */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="py-20 bg-[#050B14] text-white relative border-t border-teal-500/20"
+      >
+        <div className="max-w-5xl mx-auto px-6 text-center space-y-8 relative">
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+            Une gestion RH plus simple, plus claire.
+          </h2>
+          <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
+            Accédez immédiatement à l'Espace RH Amsoft People pour piloter vos collaborateurs.
           </p>
           <div className="pt-2">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 0 35px rgba(20,184,166,0.6)" }}
+              whileTap={{ scale: 0.98 }}
               onClick={onGoToLogin}
-              className="btn-secondary text-xs px-6 py-2.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="btn-primary bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#0F766E] px-9 py-4 text-xs sm:text-sm font-extrabold inline-flex items-center gap-3 text-white rounded-xl shadow-glow-teal cursor-pointer"
             >
-              Accéder au formulaire de connexion
-            </button>
+              <span>Accéder à l'Espace RH</span>
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* 7. FOOTER SOBRE NOIR ARDOISE */}
-      <footer className="bg-[#0F172A] text-slate-400 py-8 text-xs border-t border-slate-800 select-none">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white font-bold">
-            <span className="w-6 h-6 rounded bg-[#0F766E] flex items-center justify-center text-xs">A</span>
-            <span>Amsoft People</span>
-            <span className="text-slate-400 font-normal text-[11px] ml-2">• Gestion des collaborateurs</span>
+      {/* AJUSTEMENT 5 : FOOTER AVEC DÉGRADÉ FROM-[#050B14] TO-[#0B1B33] */}
+      <footer className="bg-gradient-to-b from-[#050B14] to-[#0B1B33] text-slate-400 py-8 text-xs border-t border-teal-500/10 select-none">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-white font-bold">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-xs text-white font-extrabold shadow-glow-teal">A</div>
+            <span className="text-sm">Amsoft People</span>
+            <span className="text-slate-400 font-normal text-xs ml-2">• Solution RH B2B Premium</span>
           </div>
-          <div className="text-[11px] text-slate-400 font-mono">
-            © 2026 Amsoft People. Tous droits réservés. • Système RH v1.0.0
+          <div className="text-xs text-slate-400 font-mono">
+            © 2026 Amsoft People. Tous droits réservés. • v2.0.0 Glass &amp; Glow Edition
           </div>
         </div>
       </footer>
+
     </div>
   );
 };

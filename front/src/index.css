@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-navy: #0B1B33;
+  --color-brand-navy-deep: #050B14;
+  --color-brand-teal: #0F766E;
+  --color-brand-teal-glow: #14B8A6;
+  --color-brand-gold: #D4AF37;
+  --color-brand-gray: #F8FAFC;
+
+  --radius-xl: 12px;
+  --radius-lg: 8px;
+
+  --shadow-soft: 0 4px 20px -4px rgba(11, 27, 51, 0.1);
+  --shadow-glow-teal: 0 0 40px -10px rgba(20, 184, 166, 0.5);
+}
+
+/* ===== DARK MODE (DEFAULT) ===== */
+:root, .dark {
+  --bg-primary: #050B14;
+  --bg-secondary: #071120;
+  --bg-card: rgba(11, 27, 51, 0.75);
+  --bg-sidebar: rgba(5, 11, 20, 0.95);
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border-color: rgba(20, 184, 166, 0.2);
+}
+
+/* ===== LIGHT MODE PREMIUM CHALEUREUX ===== */
+.light {
+  --bg-primary: #F8FAFC;          /* Gris bleuté très doux */
+  --bg-secondary: #FFFFFF;         /* Blanc pour sections principales */
+  --bg-card: #FFFFFF;              /* Cartes épurées élevées */
+  --bg-sidebar: #FFFFFF;           /* Sidebar blanche */
+  --bg-hover: #F1F5F9;             /* Survol doux */
+  --text-primary: #0B1B33;         /* Bleu nuit élégant */
+  --text-secondary: #475569;       /* Gris ardoise pour lisibilité */
+  --text-muted: #94A3B8;           /* Labels discrets */
+  --border-color: #F1F5F9;         /* Bordures extrêmes subtiles (pas d'effet tableur) */
+  --border-accent: rgba(15, 118, 110, 0.15);
+  --shadow-color: rgba(11, 27, 51, 0.05);
+}
+
+/* EXCEPTION : La Landing Page reste TOUJOURS en mode sombre permanent */
+.light .landing-page {
+  --bg-primary: #050B14;
+  --bg-secondary: #071120;
+  --bg-card: rgba(11, 27, 51, 0.8);
+  --bg-sidebar: rgba(5, 11, 20, 0.95);
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border-color: rgba(20, 184, 166, 0.2);
+}
+
+.light .landing-page .text-teal-300,
+.light .landing-page .text-teal-400 {
+  color: #14B8A6 !important;
+}
+
+.light .landing-page .glass-dark {
+  background: rgba(11, 27, 51, 0.8) !important;
+  border-color: rgba(20, 184, 166, 0.2) !important;
+  color: #FFFFFF !important;
+}
+
+.light .landing-page .text-gradient-premium {
+  background: linear-gradient(135deg, #5EEAD4 0%, #14B8A6 40%, #FFFFFF 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* En mode clair, cartes sans effet grille agressif */
+.light .bg-theme-card {
+  background-color: var(--bg-card);
+  box-shadow: 0 4px 16px -2px rgba(11, 27, 51, 0.05);
+  border: 1px solid #E2E8F0;
+}
+
+.light .bg-theme-primary {
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+}
+
+.light .text-theme-primary { color: #0B1B33; }
+.light .text-theme-secondary { color: #475569; }
+.light .text-theme-muted { color: #64748B; }
+
+.light .text-teal-300,
+.light .text-teal-400 {
+  color: #0F766E !important;
+}
+
+.light .bg-teal-500\/20 { background-color: rgba(15, 118, 110, 0.12) !important; }
+.light .bg-amber-500\/20 { background-color: rgba(245, 158, 11, 0.15) !important; }
+
+/* Ombres douces pour le mode clair */
+.light .shadow-soft {
+  box-shadow: 0 4px 16px -2px rgba(11, 27, 51, 0.05) !important;
+}
+
+.light .shadow-glow-teal {
+  box-shadow: 0 4px 20px -4px rgba(15, 118, 110, 0.2) !important;
+}
+
+/* Sidebar en Mode Clair */
+.light .bg-theme-sidebar {
+  background-color: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
+  box-shadow: 1px 0 0 0 rgba(11, 27, 51, 0.04);
+}
+
+/* Header en Mode Clair */
+.light header.bg-theme-sidebar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(11, 27, 51, 0.04);
+}
+
+/* Classes utilitaires de Thème */
+.bg-theme-primary { background-color: var(--bg-primary); }
+.bg-theme-secondary { background-color: var(--bg-secondary); }
+.bg-theme-card { background-color: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.bg-theme-sidebar { background-color: var(--bg-sidebar); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+.border-theme { border-color: var(--border-color); }
+
 @layer base {
-  :root {
-    /* 3 Couleurs Exclusives & Restrictives */
-    --brand-dark: #0F172A;     /* Noir Ardoise Slate Carbon (Sidebar & Textes forts) */
-    --primary: #0F766E;        /* Sarcelle / Teal (Boutons & Barres de progression) */
-    --primary-hover: #0d625c;
-    --background: #F3F4F6;     /* Gris Clair (Fond d'application) */
-    --surface: #FFFFFF;        /* Surfaces plates */
-    --border: #E5E7EB;         /* Séparateurs 1px très fins */
-
-    --text-main: #0F172A;
-    --text-secondary: #64748B;
-    --muted: #94A3B8;
-
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-
-    --transition: all 0.15s ease-in-out;
-  }
-
   html {
     scroll-behavior: smooth;
     font-display: swap;
@@ -29,8 +138,8 @@
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-display: swap;
-    background-color: var(--background);
-    color: var(--text-main);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -39,93 +148,39 @@
   }
 }
 
-/* ==========================================================================
-   Amsoft People — Design System Intégré Flat 100% (Sans ombres ni cartes)
-   ========================================================================== */
-
-/* Surface plate dé-structurée sans ombres portées */
-.card-saas {
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: none !important;
+/* Glassmorphism Réel (Sombre) */
+.glass-dark {
+  background: rgba(11, 27, 51, 0.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
-/* Boutons Standardisés (Sarcelle / Teal #0F766E) */
-.btn-primary {
-  background-color: var(--primary);
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.8125rem; /* 13px */
-  padding: 0.625rem 1.25rem;
-  border-radius: var(--radius-md); /* 10px */
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  border: 1px solid transparent;
-  box-shadow: none !important;
+/* Bordure Lumineuse */
+.glow-border {
+  position: relative;
+  background: linear-gradient(#0B1B33, #0B1B33) padding-box,
+              linear-gradient(135deg, #0F766E, #14B8A6, #D4AF37) border-box;
+  border: 2px solid transparent;
 }
 
-.btn-primary:hover {
-  background-color: var(--primary-hover);
+/* Ombre Colorée */
+.shadow-glow-teal {
+  box-shadow: 0 0 40px -10px rgba(20, 184, 166, 0.5);
 }
 
-.btn-secondary {
-  background-color: #ffffff;
-  color: var(--text-main);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  cursor: pointer;
-  box-shadow: none !important;
-}
-
-.btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
-}
-
-/* Form Controls */
-.input-field {
-  width: 100%;
-  padding: 0.625rem 0.875rem;
-  background-color: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 0.8125rem;
-  color: var(--text-main);
-  transition: var(--transition);
-}
-
-.input-field:focus {
-  border-color: var(--primary);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
-}
-
-/* Micro Animations Discrètes */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(2px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.12s ease-out forwards;
+/* Dégradé de Texte Premium */
+.text-gradient-premium {
+  background: linear-gradient(135deg, #5EEAD4 0%, #14B8A6 40%, #FFFFFF 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 /* Scrollbar minimale */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -133,6 +188,6 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: rgba(20, 184, 166, 0.3);
   border-radius: 9999px;
 }

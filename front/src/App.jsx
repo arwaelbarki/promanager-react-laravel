@@ -414,7 +414,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen bg-[#f4f7f6] overflow-hidden">
+    <div className="flex h-screen bg-theme-primary text-theme-primary overflow-hidden">
       {/* Toast Feedback */}
       {toast && (
         <div className="fixed bottom-5 right-5 z-50 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in border border-slate-700">

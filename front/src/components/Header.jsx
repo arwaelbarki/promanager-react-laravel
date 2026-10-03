@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ChevronDown, Check, Bell, LogOut } from 'lucide-react';
+import { Search, X, ChevronDown, Check, Bell, LogOut, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, searchQuery, setSearchQuery, notifications, setActiveTab, onLogout }) => {
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
 
+  const { theme, toggleTheme } = useTheme();
   const unreadNotifs = notifications.filter(n => !n.is_read);
 
   const handleRoleChange = (role) => {
@@ -51,8 +53,8 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
   const currentProfile = getProfileData();
 
   return (
-    <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-8 flex items-center justify-between sticky top-0 z-20 select-none">
-      {/* Left: Simple discrete search glass icon trigger */}
+    <header className="h-16 bg-theme-sidebar border-b border-theme backdrop-blur-xl px-8 flex items-center justify-between sticky top-0 z-20 select-none">
+      {/* Left: Search Bar with Theme Utility Classes */}
       <div className="flex items-center gap-3">
         <div className="relative">
           {searchExpanded ? (
@@ -61,7 +63,7 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
               animate={{ opacity: 1, scale: 1 }}
               className="relative flex items-center"
             >
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-theme-muted pointer-events-none" />
               <input
                 type="text"
                 autoFocus
@@ -69,12 +71,12 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onBlur={() => !searchQuery && setSearchExpanded(false)}
-                className="w-64 sm:w-80 pl-9 pr-8 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-[#0F172A] focus:outline-none focus:bg-white focus:border-[#0F766E] transition-all duration-200"
+                className="w-64 sm:w-80 pl-9 pr-8 py-2 bg-theme-card border border-theme text-theme-primary placeholder:text-theme-muted rounded-lg text-xs font-medium focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20 transition-all duration-200"
               />
               <button
                 type="button"
                 onClick={() => { setSearchQuery(''); setSearchExpanded(false); }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-theme-muted hover:text-theme-primary cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -82,11 +84,11 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
           ) : (
             <button
               onClick={() => setSearchExpanded(true)}
-              className="p-2 rounded-lg text-slate-400 hover:text-[#0F172A] hover:bg-slate-50 transition-all duration-200 cursor-pointer flex items-center gap-2"
+              className="px-3.5 py-2 rounded-lg bg-theme-card border border-theme text-theme-secondary hover:text-theme-primary hover:border-teal-400 transition-all duration-200 cursor-pointer flex items-center gap-2"
               title="Rechercher"
             >
-              <Search className="w-5 h-5 text-slate-400" />
-              <span className="text-xs text-slate-400 hidden sm:inline font-medium">Rechercher</span>
+              <Search className="w-4 h-4 text-teal-400" />
+              <span className="text-xs text-theme-secondary hidden sm:inline font-medium">Rechercher dans Amsoft...</span>
             </button>
           )}
         </div>
@@ -94,15 +96,24 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
 
       {/* Right Controls */}
       <div className="flex items-center gap-4">
+        {/* DARK / LIGHT MODE TOGGLE BUTTON */}
+        <button 
+          onClick={toggleTheme}
+          className="p-2 rounded-lg bg-theme-card border border-theme hover:border-teal-400 transition-all cursor-pointer flex items-center justify-center"
+          title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+        >
+          {theme === 'dark' ? <Sun className="w-4 h-4 text-teal-400" /> : <Moon className="w-4 h-4 text-teal-600" />}
+        </button>
+
         {/* Role Switcher Button */}
         <div className="relative">
           <button
             onClick={() => setShowRoleMenu(!showRoleMenu)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-[#0F172A] transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-2.5 px-3.5 py-2 bg-theme-card border border-theme hover:border-teal-400 rounded-lg text-xs font-medium text-theme-secondary transition-all duration-200 cursor-pointer"
           >
-            <span className="w-2 h-2 rounded-full bg-[#0F766E]"></span>
-            <span>Rôle : <strong className="text-[#0F172A] font-bold">{activeRole}</strong></span>
-            <ChevronDown className="w-4 h-4 text-slate-400" />
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse shadow-glow-teal"></span>
+            <span>Rôle : <strong className="text-theme-primary font-bold">{activeRole}</strong></span>
+            <ChevronDown className="w-4 h-4 text-theme-muted" />
           </button>
 
           <AnimatePresence>
@@ -112,29 +123,29 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.98 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 mt-2 w-52 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-xl shadow-none py-2 z-50"
+                className="absolute right-0 mt-2 w-52 bg-theme-card border border-theme rounded-xl shadow-glow-teal py-2 z-50"
               >
-                <div className="px-3.5 py-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Changer de rôle</div>
+                <div className="px-3.5 py-1 text-[11px] font-bold text-theme-muted uppercase tracking-wider">Changer de rôle</div>
                 <button
                   onClick={() => handleRoleChange('RH')}
-                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-50 cursor-pointer ${activeRole === 'RH' ? 'text-[#0F766E] font-bold bg-[#0F766E]/10' : 'text-slate-700'}`}
+                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-teal-500/10 cursor-pointer ${activeRole === 'RH' ? 'text-teal-300 font-bold bg-teal-500/20' : 'text-theme-secondary'}`}
                 >
                   <span>Responsable RH</span>
-                  {activeRole === 'RH' && <Check className="w-4 h-4 text-[#0F766E]" />}
+                  {activeRole === 'RH' && <Check className="w-4 h-4 text-teal-400" />}
                 </button>
                 <button
                   onClick={() => handleRoleChange('Admin')}
-                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-50 cursor-pointer ${activeRole === 'Admin' ? 'text-[#0F766E] font-bold bg-[#0F766E]/10' : 'text-slate-700'}`}
+                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-teal-500/10 cursor-pointer ${activeRole === 'Admin' ? 'text-teal-300 font-bold bg-teal-500/20' : 'text-theme-secondary'}`}
                 >
                   <span>Administrateur</span>
-                  {activeRole === 'Admin' && <Check className="w-4 h-4 text-[#0F766E]" />}
+                  {activeRole === 'Admin' && <Check className="w-4 h-4 text-teal-400" />}
                 </button>
                 <button
                   onClick={() => handleRoleChange('Employé')}
-                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-slate-50 cursor-pointer ${activeRole === 'Employé' ? 'text-[#0F766E] font-bold bg-[#0F766E]/10' : 'text-slate-700'}`}
+                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-teal-500/10 cursor-pointer ${activeRole === 'Employé' ? 'text-teal-300 font-bold bg-teal-500/20' : 'text-theme-secondary'}`}
                 >
                   <span>Espace Employé</span>
-                  {activeRole === 'Employé' && <Check className="w-4 h-4 text-[#0F766E]" />}
+                  {activeRole === 'Employé' && <Check className="w-4 h-4 text-teal-400" />}
                 </button>
               </motion.div>
             )}
@@ -145,11 +156,11 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
         <div className="relative">
           <button
             onClick={() => setShowNotifMenu(!showNotifMenu)}
-            className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 relative transition-all duration-200 cursor-pointer"
+            className="w-9 h-9 rounded-lg border border-theme bg-theme-card hover:border-teal-400 flex items-center justify-center text-theme-secondary relative transition-all duration-200 cursor-pointer"
           >
-            <Bell className="w-4 h-4 text-slate-600" />
+            <Bell className="w-4 h-4 text-theme-secondary" />
             {unreadNotifs.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#0F766E] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-teal-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center animate-pulse shadow-glow-teal">
                 {unreadNotifs.length}
               </span>
             )}
@@ -162,25 +173,25 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.98 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 mt-2 w-80 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-xl shadow-none py-2 z-50"
+                className="absolute right-0 mt-2 w-80 bg-theme-card border border-theme rounded-xl shadow-glow-teal py-2 z-50"
               >
-                <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
-                  <span className="font-bold text-xs text-[#0F172A]">Notifications ({unreadNotifs.length})</span>
+                <div className="px-4 py-2.5 border-b border-theme flex items-center justify-between">
+                  <span className="font-bold text-xs text-theme-primary">Notifications ({unreadNotifs.length})</span>
                   <button
                     onClick={() => { setActiveTab('notifications'); setShowNotifMenu(false); }}
-                    className="text-xs text-[#0F766E] hover:underline font-semibold cursor-pointer"
+                    className="text-xs text-teal-400 hover:underline font-semibold cursor-pointer"
                   >
                     Voir tout
                   </button>
                 </div>
-                <div className="max-h-64 overflow-y-auto divide-y divide-slate-100">
+                <div className="max-h-64 overflow-y-auto divide-y divide-theme">
                   {notifications.length === 0 ? (
-                    <div className="p-4 text-center text-xs text-slate-400">Aucune notification</div>
+                    <div className="p-4 text-center text-xs text-theme-muted">Aucune notification</div>
                   ) : (
                     notifications.slice(0, 4).map((n) => (
-                      <div key={n.id} className={`p-3 text-xs ${n.is_read ? 'bg-white text-slate-500' : 'bg-[#0F766E]/5 text-slate-800 font-medium'}`}>
-                        <div className="font-semibold text-[#0F172A] mb-0.5">{n.title}</div>
-                        <div className="text-slate-600 text-[11px] leading-snug">{n.message}</div>
+                      <div key={n.id} className={`p-3 text-xs ${n.is_read ? 'text-theme-muted' : 'bg-teal-500/10 text-theme-secondary font-medium'}`}>
+                        <div className="font-bold text-theme-primary mb-0.5">{n.title}</div>
+                        <div className="text-theme-secondary text-[11px] leading-snug">{n.message}</div>
                       </div>
                     ))
                   )}
@@ -190,16 +201,16 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
           </AnimatePresence>
         </div>
 
-        {/* User Profile vector avatar */}
-        <div className="flex items-center gap-3 pl-4 border-l border-slate-200/80">
-          <div className="w-8 h-8 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-xs border border-slate-200 shadow-xs">
+        {/* User Profile Avatar */}
+        <div className="flex items-center gap-3 pl-4 border-l border-theme">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-white flex items-center justify-center font-extrabold text-xs ring-2 ring-teal-500/40 shadow-glow-teal">
             {currentProfile.initials}
           </div>
           <div className="hidden sm:block leading-tight">
-            <div className="font-bold text-xs text-[#0F172A]">
+            <div className="font-bold text-xs text-theme-primary">
               {currentProfile.name}
             </div>
-            <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+            <div className="text-teal-400 text-xs font-medium mt-0.5">
               {currentProfile.title}
             </div>
           </div>
@@ -207,7 +218,7 @@ const Header = ({ activeRole, setActiveRole, currentUser, setCurrentUser, search
             <button
               onClick={onLogout}
               title="Déconnexion"
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all cursor-pointer ml-1"
+              className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-card rounded-lg transition-all cursor-pointer ml-1"
             >
               <LogOut className="w-4 h-4" />
             </button>
