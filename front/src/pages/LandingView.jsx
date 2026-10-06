@@ -219,7 +219,7 @@ const LandingView = ({ onGoToLogin }) => {
             <motion.div variants={fadeInUp}>
               <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-[#160B1D]/80 border border-[rgba(217,174,58,0.22)] rounded-full text-[11px] font-mono-data text-[#E8C65A] tracking-wider uppercase shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-[#D9AE3A] animate-pulse"></span>
-                <span>Conçu à Casablanca • Conforme au Droit du Travail Marocain</span>
+                <span>Conçu à Marrakech • Conforme au Droit du Travail Marocain</span>
               </div>
             </motion.div>
 
@@ -360,7 +360,7 @@ const LandingView = ({ onGoToLogin }) => {
                     </div>
                     <div>
                       <div className="font-bold text-xs text-[#100817]">Youssef El Amrani</div>
-                      <div className="text-[10px] text-[#6E6375] font-medium mt-0.5">Congé Payé - 5 jours (Casablanca)</div>
+                      <div className="text-[10px] text-[#6E6375] font-medium mt-0.5">Congé Payé - 5 jours (Marrakech)</div>
                     </div>
                   </div>
                   <span className="px-2.5 py-1.5 rounded-xl bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] text-[10px] font-extrabold cursor-pointer transition-colors shadow-xs shrink-0 ml-2">
@@ -600,7 +600,7 @@ const LandingView = ({ onGoToLogin }) => {
               </div>
               <div>
                 <div className="font-serif font-bold text-base text-[#100817]">Fatine Alaoui</div>
-                <div className="text-xs font-mono-data text-[#6E6375]">Directrice RH · Groupe Atlas (Casablanca)</div>
+                <div className="text-xs font-mono-data text-[#6E6375]">Directrice RH · Groupe Atlas (Marrakech)</div>
               </div>
             </div>
           </div>
@@ -681,7 +681,7 @@ const LandingView = ({ onGoToLogin }) => {
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Tout du plan Standard</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Édition bulletins de paie MAD</li>
                 <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Module CNSS &amp; Teledeclarations</li>
-                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Support prioritaire Casablanca</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Support prioritaire Marrakech</li>
               </ul>
               <button onClick={onGoToLogin} className="w-full py-3.5 bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-bold text-xs rounded-xl transition-colors cursor-pointer shadow-md">
                 Demander un essai gratuit
@@ -784,7 +784,7 @@ const LandingView = ({ onGoToLogin }) => {
 
           <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono-data text-[#B8A9BD]/60">
             <div>© 2026 Amsoft People. Domaine : app.amsoft-people.ma</div>
-            <div>Direction Artistique : Précision Chaleureuse · Casablanca</div>
+            <div>Direction Artistique : Précision Chaleureuse · Marrakech</div>
           </div>
 
         </div>

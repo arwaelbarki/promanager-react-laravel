@@ -29,12 +29,12 @@ const DesignSystemView = lazy(() => import('./pages/DesignSystemView'));
 
 // Default Mock Datasets for instant presentation & offline fallback
 const initialEmployees = [
-  { id: 1, matricule: 'EMP-0001', first_name: 'Ahmed', last_name: 'Benali', email: 'ahmed.benali@company.ma', phone: '+212 661 23 45 67', cin: 'BE892102', contract_type: 'CDI', salary: 18500, status: 'Actif', hire_date: '2021-03-15', city: 'Casablanca', role: 'RH', department: { name: 'Informatique & Tech' }, position: { title: 'Lead Développeur Fullstack' } },
+  { id: 1, matricule: 'EMP-0001', first_name: 'Ahmed', last_name: 'Benali', email: 'ahmed.benali@company.ma', phone: '+212 661 23 45 67', cin: 'BE892102', contract_type: 'CDI', salary: 18500, status: 'Actif', hire_date: '2021-03-15', city: 'Marrakech', role: 'RH', department: { name: 'Informatique & Tech' }, position: { title: 'Lead Développeur Fullstack' } },
   { id: 2, matricule: 'EMP-0002', first_name: 'Fatine', last_name: 'Alaoui', email: 'fatine.alaoui@company.ma', phone: '+212 662 98 76 54', cin: 'A741029', contract_type: 'CDI', salary: 16000, status: 'Actif', hire_date: '2020-01-10', city: 'Rabat', role: 'RH', department: { name: 'Ressources Humaines' }, position: { title: 'Responsable RH' } },
-  { id: 3, matricule: 'EMP-0003', first_name: 'Karim', last_name: 'Tazi', email: 'karim.tazi@company.ma', phone: '+212 663 11 22 33', cin: 'CD551209', contract_type: 'CDD', salary: 12000, status: 'Actif', hire_date: '2025-10-01', city: 'Casablanca', role: 'Employé', department: { name: 'Finance & Comptabilité' }, position: { title: 'Comptable Senior' } },
-  { id: 4, matricule: 'EMP-0004', first_name: 'Sanaa', last_name: 'Mansouri', email: 'sanaa.mansouri@company.ma', phone: '+212 664 44 55 66', cin: 'D889102', contract_type: 'CDI', salary: 9500, status: 'En congé', hire_date: '2024-01-15', city: 'Casablanca', role: 'Employé', department: { name: 'Commercial & Ventes' }, position: { title: 'Responsable Commercial' } },
+  { id: 3, matricule: 'EMP-0003', first_name: 'Karim', last_name: 'Tazi', email: 'karim.tazi@company.ma', phone: '+212 663 11 22 33', cin: 'CD551209', contract_type: 'CDD', salary: 12000, status: 'Actif', hire_date: '2025-10-01', city: 'Marrakech', role: 'Employé', department: { name: 'Finance & Comptabilité' }, position: { title: 'Comptable Senior' } },
+  { id: 4, matricule: 'EMP-0004', first_name: 'Sanaa', last_name: 'Mansouri', email: 'sanaa.mansouri@company.ma', phone: '+212 664 44 55 66', cin: 'D889102', contract_type: 'CDI', salary: 9500, status: 'En congé', hire_date: '2024-01-15', city: 'Marrakech', role: 'Employé', department: { name: 'Commercial & Ventes' }, position: { title: 'Responsable Commercial' } },
   { id: 5, matricule: 'EMP-0005', first_name: 'Youssef', last_name: 'El Amrani', email: 'youssef.elamrani@company.ma', phone: '+212 665 77 88 99', cin: 'F129044', contract_type: 'CDI', salary: 11000, status: 'Actif', hire_date: '2023-05-20', city: 'Rabat', role: 'Employé', department: { name: 'Marketing & Com' }, position: { title: 'UX/UI Designer' } },
-  { id: 6, matricule: 'EMP-0006', first_name: 'Meryem', last_name: 'Bennani', email: 'meryem.bennani@company.ma', phone: '+212 666 33 22 11', cin: 'G441920', contract_type: 'CDD', salary: 7500, status: 'Actif', hire_date: '2026-02-01', city: 'Casablanca', role: 'Employé', department: { name: 'Ressources Humaines' }, position: { title: 'Assistant RH' } },
+  { id: 6, matricule: 'EMP-0006', first_name: 'Meryem', last_name: 'Bennani', email: 'meryem.bennani@company.ma', phone: '+212 666 33 22 11', cin: 'G441920', contract_type: 'CDD', salary: 7500, status: 'Actif', hire_date: '2026-02-01', city: 'Marrakech', role: 'Employé', department: { name: 'Ressources Humaines' }, position: { title: 'Assistant RH' } },
 ];
 
 const initialContracts = [
@@ -757,7 +757,7 @@ export default function App() {
               </div>
               <div>
                 <label className="font-semibold block mb-1 text-[#B8A9BD]">Ville</label>
-                <input type="text" name="city" defaultValue={editingEmployee.city || 'Casablanca'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
+                <input type="text" name="city" defaultValue={editingEmployee.city || 'Marrakech'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
             </div>
 
