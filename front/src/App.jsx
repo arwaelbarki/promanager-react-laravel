@@ -96,6 +96,17 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(localStorage.getItem('hr_active_user') || 'Fatine Alaoui');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Theme State management (Light Mode default per Rule 2)
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('amsoft_theme') || 'light';
+  });
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('amsoft_theme', nextTheme);
+  };
+
   // Data States initialized with rich default datasets
   const [stats, setStats] = useState(null);
   const [employees, setEmployees] = useState(initialEmployees);
@@ -394,9 +405,9 @@ export default function App() {
   if (!isAuthenticated) {
     return (
       <Suspense fallback={
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#f4f7f6] text-slate-400 space-y-3">
-          <div className="w-10 h-10 border-3 border-[#0d766e] border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-xs font-semibold text-slate-600">Chargement de la plateforme Amsoft People...</p>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#100817] text-[#B8A9BD] space-y-3">
+          <div className="w-10 h-10 border-3 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs font-semibold text-[#F7F1E7]">Chargement de la plateforme Amsoft People...</p>
         </div>
       }>
         {authView === 'landing' ? (
@@ -413,12 +424,18 @@ export default function App() {
     );
   }
 
+  const isDark = theme === 'dark';
+
   return (
-    <div className="flex h-screen bg-theme-primary text-theme-primary overflow-hidden">
+    <div className={`flex h-screen overflow-hidden transition-colors duration-200 ${
+      isDark ? 'bg-[#100817] text-[#F7F1E7]' : 'bg-[#F8F9FA] text-[#1A1A24]'
+    }`}>
       {/* Toast Feedback */}
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in border border-slate-700">
-          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+        <div className={`fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in border ${
+          isDark ? 'bg-[#180D21] text-[#F7F1E7] border-white/10' : 'bg-white text-[#1A1A24] border-slate-200 shadow-lg'
+        }`}>
+          <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
           <span className="text-xs font-semibold">{toast.msg}</span>
         </div>
       )}
@@ -428,7 +445,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         activeRole={activeRole}
-        unreadNotificationsCount={notifications.filter(n => !n.is_read).length}
+        unreadNotificationsCount={(notifications || []).filter(n => n && !n.is_read).length}
+        theme={theme}
       />
 
       {/* Main Container */}
@@ -444,13 +462,15 @@ export default function App() {
           notifications={notifications}
           setActiveTab={setActiveTab}
           onLogout={handleLogout}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
 
         {/* Dynamic Page Workspace */}
         <main className="flex-1 overflow-y-auto p-6">
           <Suspense fallback={
             <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-3">
-              <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-3 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
               <p className="text-xs font-medium">Chargement du composant...</p>
             </div>
           }>
@@ -460,6 +480,7 @@ export default function App() {
                 currentUser={currentUser}
                 setActiveTab={setActiveTab}
                 onOpenNewEmployeeModal={() => setShowNewEmpModal(true)}
+                theme={theme}
               />
             )}
 
@@ -469,6 +490,7 @@ export default function App() {
                 onClockOut={handleClockOut}
                 onOpenLeaveModal={() => setShowLeaveModal(true)}
                 onOpenRequestModal={() => setShowHrReqModal(true)}
+                theme={theme}
               />
             )}
 
@@ -478,6 +500,7 @@ export default function App() {
                 departments={departments}
                 onSelectEmployee={handleSelectEmployee}
                 onOpenNewEmployeeModal={() => setShowNewEmpModal(true)}
+                theme={theme}
               />
             )}
 
@@ -486,6 +509,7 @@ export default function App() {
                 employee={selectedEmpData}
                 onBack={() => setActiveTab('employees')}
                 onEditEmployee={handleEditEmployeeClick}
+                theme={theme}
               />
             )}
 
@@ -493,6 +517,7 @@ export default function App() {
               <ContractsView
                 contracts={contracts}
                 onOpenNewContractModal={() => setShowContractModal(true)}
+                theme={theme}
               />
             )}
 
@@ -502,6 +527,7 @@ export default function App() {
                 activeRole={activeRole}
                 onOpenLeaveModal={() => setShowLeaveModal(true)}
                 onUpdateLeaveStatus={handleUpdateLeaveStatus}
+                theme={theme}
               />
             )}
 
@@ -509,6 +535,7 @@ export default function App() {
               <AbsencesView
                 absences={absences}
                 onOpenNewAbsenceModal={() => setShowAbsenceModal(true)}
+                theme={theme}
               />
             )}
 
@@ -517,6 +544,7 @@ export default function App() {
                 attendances={attendances}
                 onClockIn={handleClockIn}
                 onClockOut={handleClockOut}
+                theme={theme}
               />
             )}
 
@@ -524,6 +552,7 @@ export default function App() {
               <DocumentsView
                 documents={documents}
                 onOpenUploadModal={() => setShowDocModal(true)}
+                theme={theme}
               />
             )}
 
@@ -536,6 +565,7 @@ export default function App() {
                   setHrRequests(hrRequests.map(r => r.id === id ? { ...r, status: st, hr_comment: comm } : r));
                   showFeedback("Demande RH mise à jour !");
                 }}
+                theme={theme}
               />
             )}
 
@@ -543,6 +573,7 @@ export default function App() {
               <NotificationsView
                 notifications={notifications}
                 onMarkRead={handleMarkNotifRead}
+                theme={theme}
               />
             )}
 
@@ -552,14 +583,15 @@ export default function App() {
                 positions={positions}
                 onOpenNewDeptModal={() => setShowDeptModal(true)}
                 onOpenNewPosModal={() => setShowPosModal(true)}
+                theme={theme}
               />
             )}
 
-            {(activeTab === 'users' || activeTab === 'roles') && <UsersRolesView />}
-            {activeTab === 'audit_logs' && <AuditLogsView auditLogs={auditLogs} />}
-            {activeTab === 'design_system' && <DesignSystemView />}
-            {activeTab === 'reports' && <ReportsView />}
-            {activeTab === 'settings' && <SettingsView />}
+            {(activeTab === 'users' || activeTab === 'roles') && <UsersRolesView theme={theme} />}
+            {activeTab === 'audit_logs' && <AuditLogsView auditLogs={auditLogs} theme={theme} />}
+            {activeTab === 'design_system' && <DesignSystemView theme={theme} />}
+            {activeTab === 'reports' && <ReportsView theme={theme} />}
+            {activeTab === 'settings' && <SettingsView theme={theme} />}
           </Suspense>
         </main>
       </div>
@@ -568,77 +600,77 @@ export default function App() {
 
       {/* 1. Modal Nouveau Collaborateur */}
       <Modal isOpen={showNewEmpModal} onClose={() => setShowNewEmpModal(false)} title="Créer un Nouveau Collaborateur">
-        <form onSubmit={handleCreateEmployeeSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleCreateEmployeeSubmit} className="space-y-4 text-xs text-[#F7F1E7]">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Prénom *</label>
-              <input type="text" name="first_name" required placeholder="Ex: Youssef" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Prénom *</label>
+              <input type="text" name="first_name" required placeholder="Ex: Youssef" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Nom *</label>
-              <input type="text" name="last_name" required placeholder="Ex: El Amrani" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Nom *</label>
+              <input type="text" name="last_name" required placeholder="Ex: El Amrani" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Genre / Sexe *</label>
-              <select name="gender" required defaultValue="M" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
-                <option value="M">Masculin (Homme)</option>
-                <option value="F">Féminin (Femme)</option>
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Genre / Sexe *</label>
+              <select name="gender" required defaultValue="M" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-semibold">
+                <option value="M" className="bg-[#100817]">Masculin (Homme)</option>
+                <option value="F" className="bg-[#100817]">Féminin (Femme)</option>
               </select>
             </div>
             <div>
-              <label className="font-semibold block mb-1">Date de Naissance</label>
-              <input type="date" name="birth_date" defaultValue="1995-06-15" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Date de Naissance</label>
+              <input type="date" name="birth_date" defaultValue="1995-06-15" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Email Professionnel *</label>
-              <input type="email" name="email" required placeholder="youssef@company.ma" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Email Professionnel *</label>
+              <input type="email" name="email" required placeholder="youssef@company.ma" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Numéro CIN</label>
-              <input type="text" name="cin" placeholder="Ex: A98210" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Numéro CIN</label>
+              <input type="text" name="cin" placeholder="Ex: A98210" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Département</label>
-              <select name="department_id" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Département</label>
+              <select name="department_id" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
                 {departments.map(d => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
+                  <option key={d.id} value={d.id} className="bg-[#100817]">{d.name}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="font-semibold block mb-1">Type de Contrat *</label>
-              <select name="contract_type" required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                <option value="CDI">CDI</option>
-                <option value="CDD">CDD</option>
-                <option value="Stage">Stage</option>
-                <option value="Freelance">Freelance</option>
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Type de Contrat *</label>
+              <select name="contract_type" required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+                <option value="CDI" className="bg-[#100817]">CDI</option>
+                <option value="CDD" className="bg-[#100817]">CDD</option>
+                <option value="Stage" className="bg-[#100817]">Stage</option>
+                <option value="Freelance" className="bg-[#100817]">Freelance</option>
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Salaire Brut (MAD) *</label>
-              <input type="number" name="salary" required defaultValue="9500" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Salaire Brut (MAD) *</label>
+              <input type="number" name="salary" required defaultValue="9500" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-mono" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Date d'embauche *</label>
-              <input type="date" name="hire_date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Date d'embauche *</label>
+              <input type="date" name="hire_date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowNewEmpModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl cursor-pointer">Annuler</button>
-            <button type="submit" className="btn-primary">Enregistrer Collaborateur</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowNewEmpModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Enregistrer Collaborateur</button>
           </div>
         </form>
       </Modal>
@@ -646,97 +678,97 @@ export default function App() {
       {/* 2. Modal Modifier la Fiche Collaborateur */}
       {showEditEmpModal && editingEmployee && (
         <Modal isOpen={showEditEmpModal} onClose={() => setShowEditEmpModal(false)} title={`Modifier la Fiche : ${editingEmployee.first_name} ${editingEmployee.last_name}`}>
-          <form onSubmit={handleUpdateEmployeeSubmit} className="space-y-4 text-xs">
+          <form onSubmit={handleUpdateEmployeeSubmit} className="space-y-4 text-xs text-[#F7F1E7]">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Prénom *</label>
-                <input type="text" name="first_name" required defaultValue={editingEmployee.first_name} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Prénom *</label>
+                <input type="text" name="first_name" required defaultValue={editingEmployee.first_name} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-medium" />
               </div>
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Nom *</label>
-                <input type="text" name="last_name" required defaultValue={editingEmployee.last_name} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Nom *</label>
+                <input type="text" name="last_name" required defaultValue={editingEmployee.last_name} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-medium" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-blue-700 font-bold">Genre / Sexe *</label>
-                <select name="gender" required defaultValue={editingEmployee.gender || 'M'} className="w-full p-2 bg-blue-50/50 border border-blue-300 rounded-lg text-xs font-bold text-slate-800">
-                  <option value="M">Masculin (Homme)</option>
-                  <option value="F">Féminin (Femme)</option>
+                <label className="font-semibold block mb-1 text-[#D9AE3A] font-bold">Genre / Sexe *</label>
+                <select name="gender" required defaultValue={editingEmployee.gender || 'M'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-bold">
+                  <option value="M" className="bg-[#100817]">Masculin (Homme)</option>
+                  <option value="F" className="bg-[#100817]">Féminin (Femme)</option>
                 </select>
               </div>
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Date de Naissance</label>
-                <input type="date" name="birth_date" defaultValue={editingEmployee.birth_date || '1990-05-14'} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Date de Naissance</label>
+                <input type="date" name="birth_date" defaultValue={editingEmployee.birth_date || '1990-05-14'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Adresse Email *</label>
-                <input type="email" name="email" required defaultValue={editingEmployee.email} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Adresse Email *</label>
+                <input type="email" name="email" required defaultValue={editingEmployee.email} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Téléphone Personnel</label>
-                <input type="text" name="phone" defaultValue={editingEmployee.phone || ''} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Téléphone Personnel</label>
+                <input type="text" name="phone" defaultValue={editingEmployee.phone || ''} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Numéro CIN</label>
-                <input type="text" name="cin" defaultValue={editingEmployee.cin || ''} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Numéro CIN</label>
+                <input type="text" name="cin" defaultValue={editingEmployee.cin || ''} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-mono" />
               </div>
               <div>
-                <label className="font-semibold block mb-1 font-bold text-blue-600">Statut de l'Employé *</label>
-                <select name="status" required defaultValue={editingEmployee.status || 'Actif'} className="w-full p-2 bg-slate-50 border-2 border-blue-400 rounded-lg text-xs font-bold text-slate-800">
-                  <option value="Actif">Actif</option>
-                  <option value="En congé">En congé</option>
-                  <option value="Suspendu">Suspendu</option>
-                  <option value="Démissionnaire">Démissionnaire</option>
-                  <option value="Licencié">Licencié</option>
-                  <option value="Retraité">Retraité</option>
+                <label className="font-semibold block mb-1 font-bold text-[#D9AE3A]">Statut de l'Employé *</label>
+                <select name="status" required defaultValue={editingEmployee.status || 'Actif'} className="w-full p-2 bg-[#100817] border-2 border-[#D9AE3A]/50 rounded-lg text-xs font-bold text-[#F7F1E7]">
+                  <option value="Actif" className="bg-[#100817]">Actif</option>
+                  <option value="En congé" className="bg-[#100817]">En congé</option>
+                  <option value="Suspendu" className="bg-[#100817]">Suspendu</option>
+                  <option value="Démissionnaire" className="bg-[#100817]">Démissionnaire</option>
+                  <option value="Licencié" className="bg-[#100817]">Licencié</option>
+                  <option value="Retraité" className="bg-[#100817]">Retraité</option>
                 </select>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Type de Contrat *</label>
-                <select name="contract_type" required defaultValue={editingEmployee.contract_type || 'CDI'} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
-                  <option value="CDI">CDI</option>
-                  <option value="CDD">CDD</option>
-                  <option value="Stage">Stage</option>
-                  <option value="Freelance">Freelance</option>
-                  <option value="Intérim">Intérim</option>
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Type de Contrat *</label>
+                <select name="contract_type" required defaultValue={editingEmployee.contract_type || 'CDI'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-semibold">
+                  <option value="CDI" className="bg-[#100817]">CDI</option>
+                  <option value="CDD" className="bg-[#100817]">CDD</option>
+                  <option value="Stage" className="bg-[#100817]">Stage</option>
+                  <option value="Freelance" className="bg-[#100817]">Freelance</option>
+                  <option value="Intérim" className="bg-[#100817]">Intérim</option>
                 </select>
               </div>
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Salaire Mensuel Brut (MAD) *</label>
-                <input type="number" name="salary" required defaultValue={editingEmployee.salary || 8000} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono font-bold" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Salaire Mensuel Brut (MAD) *</label>
+                <input type="number" name="salary" required defaultValue={editingEmployee.salary || 8000} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg font-mono font-bold" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Date d'embauche</label>
-                <input type="date" name="hire_date" defaultValue={editingEmployee.hire_date || '2021-03-15'} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Date d'embauche</label>
+                <input type="date" name="hire_date" defaultValue={editingEmployee.hire_date || '2021-03-15'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
               <div>
-                <label className="font-semibold block mb-1 text-slate-700">Ville</label>
-                <input type="text" name="city" defaultValue={editingEmployee.city || 'Casablanca'} className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="font-semibold block mb-1 text-[#B8A9BD]">Ville</label>
+                <input type="text" name="city" defaultValue={editingEmployee.city || 'Casablanca'} className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
               </div>
             </div>
 
             <div>
-              <label className="font-semibold block mb-1 text-slate-700">Adresse Résidentielle</label>
-              <input type="text" name="address" defaultValue={editingEmployee.address || ''} placeholder="Adresse complète..." className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Adresse Résidentielle</label>
+              <input type="text" name="address" defaultValue={editingEmployee.address || ''} placeholder="Adresse complète..." className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
 
-            <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-              <button type="button" onClick={() => setShowEditEmpModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl cursor-pointer">Annuler</button>
-              <button type="submit" className="btn-primary">Sauvegarder les Modifications</button>
+            <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+              <button type="button" onClick={() => setShowEditEmpModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+              <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Sauvegarder les Modifications</button>
             </div>
           </form>
         </Modal>
@@ -744,190 +776,190 @@ export default function App() {
 
       {/* 3. Modal Demande de Congé */}
       <Modal isOpen={showLeaveModal} onClose={() => setShowLeaveModal(false)} title="Formulaire de Demande de Congé">
-        <form onSubmit={handleCreateLeaveSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleCreateLeaveSubmit} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Type de Congé *</label>
-            <select name="leave_type_id" required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-              <option value="1">Congé annuel (Payé)</option>
-              <option value="2">Congé maladie (Certificat requis)</option>
-              <option value="3">Congé exceptionnel (Événement)</option>
-              <option value="4">Congé sans solde</option>
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Type de Congé *</label>
+            <select name="leave_type_id" required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+              <option value="1" className="bg-[#100817]">Congé annuel (Payé)</option>
+              <option value="2" className="bg-[#100817]">Congé maladie (Certificat requis)</option>
+              <option value="3" className="bg-[#100817]">Congé exceptionnel (Événement)</option>
+              <option value="4" className="bg-[#100817]">Congé sans solde</option>
             </select>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Date Début *</label>
-              <input type="date" name="start_date" required defaultValue="2026-09-20" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Date Début *</label>
+              <input type="date" name="start_date" required defaultValue="2026-09-20" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Date Fin *</label>
-              <input type="date" name="end_date" required defaultValue="2026-09-25" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Date Fin *</label>
+              <input type="date" name="end_date" required defaultValue="2026-09-25" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Nombre de Jours</label>
-              <input type="number" name="total_days" defaultValue="5" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-blue-600" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Nombre de Jours</label>
+              <input type="number" name="total_days" defaultValue="5" className="w-full p-2 bg-[#100817] border border-white/10 text-[#D9AE3A] font-bold rounded-lg" />
             </div>
           </div>
 
           <div>
-            <label className="font-semibold block mb-1">Motif de la demande</label>
-            <textarea name="reason" rows="3" placeholder="Précisez la raison de votre absence..." className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"></textarea>
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Motif de la demande</label>
+            <textarea name="reason" rows="3" placeholder="Précisez la raison de votre absence..." className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg"></textarea>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowLeaveModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl cursor-pointer">Annuler</button>
-            <button type="submit" className="btn-primary">Soumettre la Demande</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowLeaveModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Soumettre la Demande</button>
           </div>
         </form>
       </Modal>
 
       {/* 4. Modal Nouveau Contrat */}
       <Modal isOpen={showContractModal} onClose={() => setShowContractModal(false)} title="Créer un Nouveau Contrat de Travail">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau contrat créé!"); setShowContractModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau contrat créé!"); setShowContractModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Collaborateur *</label>
-            <select name="employee_id" required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-              {employees.map(e => <option key={e.id} value={e.id}>{e.first_name} {e.last_name} ({e.matricule})</option>)}
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Collaborateur *</label>
+            <select name="employee_id" required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+              {employees.map(e => <option key={e.id} value={e.id} className="bg-[#100817]">{e.first_name} {e.last_name} ({e.matricule})</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Type de Contrat *</label>
-              <select name="contract_type" required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                <option value="CDI">CDI</option>
-                <option value="CDD">CDD</option>
-                <option value="Stage">Stage</option>
-                <option value="Freelance">Freelance</option>
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Type de Contrat *</label>
+              <select name="contract_type" required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+                <option value="CDI" className="bg-[#100817]">CDI</option>
+                <option value="CDD" className="bg-[#100817]">CDD</option>
+                <option value="Stage" className="bg-[#100817]">Stage</option>
+                <option value="Freelance" className="bg-[#100817]">Freelance</option>
               </select>
             </div>
             <div>
-              <label className="font-semibold block mb-1">Salaire (MAD) *</label>
-              <input type="number" name="salary" defaultValue="12000" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Salaire (MAD) *</label>
+              <input type="number" name="salary" defaultValue="12000" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowContractModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Créer Contrat</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowContractModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Créer Contrat</button>
           </div>
         </form>
       </Modal>
 
       {/* 5. Modal Enregistrer Absence */}
       <Modal isOpen={showAbsenceModal} onClose={() => setShowAbsenceModal(false)} title="Enregistrer une Absence">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Absence enregistrée avec succès!"); setShowAbsenceModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Absence enregistrée avec succès!"); setShowAbsenceModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Collaborateur *</label>
-            <select required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-              {employees.map(e => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Collaborateur *</label>
+            <select required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+              {employees.map(e => <option key={e.id} value={e.id} className="bg-[#100817]">{e.first_name} {e.last_name}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Date *</label>
-              <input type="date" required defaultValue="2026-09-10" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Date *</label>
+              <input type="date" required defaultValue="2026-09-10" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Type d'absence</label>
-              <select className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                <option>Absence injustifiée</option>
-                <option>Maladie</option>
-                <option>Autorisation exceptionnelle</option>
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Type d'absence</label>
+              <select className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+                <option className="bg-[#100817]">Absence injustifiée</option>
+                <option className="bg-[#100817]">Maladie</option>
+                <option className="bg-[#100817]">Autorisation exceptionnelle</option>
               </select>
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowAbsenceModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Valider Absence</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowAbsenceModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Valider Absence</button>
           </div>
         </form>
       </Modal>
 
       {/* 6. Modal Déposer Document */}
       <Modal isOpen={showDocModal} onClose={() => setShowDocModal(false)} title="Déposer un Document RH">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Document téléversé avec succès!"); setShowDocModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Document téléversé avec succès!"); setShowDocModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Collaborateur *</label>
-            <select required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-              {employees.map(e => <option key={e.id} value={e.id}>{e.first_name} {e.last_name}</option>)}
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Collaborateur *</label>
+            <select required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+              {employees.map(e => <option key={e.id} value={e.id} className="bg-[#100817]">{e.first_name} {e.last_name}</option>)}
             </select>
           </div>
           <div>
-            <label className="font-semibold block mb-1">Titre du document *</label>
-            <input type="text" required placeholder="Ex: Attestation d'affiliation CNSS" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Titre du document *</label>
+            <input type="text" required placeholder="Ex: Attestation d'affiliation CNSS" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
           </div>
           <div>
-            <label className="font-semibold block mb-1">Fichier (PDF, PNG, JPG - Max 5MB) *</label>
-            <input type="file" required accept=".pdf,.png,.jpg,.docx" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Fichier (PDF, PNG, JPG - Max 5MB) *</label>
+            <input type="file" required accept=".pdf,.png,.jpg,.docx" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowDocModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Téléverser</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowDocModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Téléverser</button>
           </div>
         </form>
       </Modal>
 
       {/* 7. Modal Demande RH */}
       <Modal isOpen={showHrReqModal} onClose={() => setShowHrReqModal(false)} title="Nouvelle Demande Administrative RH">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Demande RH envoyée au service RH!"); setShowHrReqModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Demande RH envoyée au service RH!"); setShowHrReqModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Type de document / demande *</label>
-            <select required className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-              <option>Attestation de travail</option>
-              <option>Fiche de paie du mois</option>
-              <option>Demande de prêt / Avance sur salaire</option>
-              <option>Mise à jour d'adresse RIB</option>
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Type de document / demande *</label>
+            <select required className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg">
+              <option className="bg-[#100817]">Attestation de travail</option>
+              <option className="bg-[#100817]">Fiche de paie du mois</option>
+              <option className="bg-[#100817]">Demande de prêt / Avance sur salaire</option>
+              <option className="bg-[#100817]">Mise à jour d'adresse RIB</option>
             </select>
           </div>
           <div>
-            <label className="font-semibold block mb-1">Commentaires complémentaires</label>
-            <textarea rows="3" placeholder="Précisez votre demande..." className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"></textarea>
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Commentaires complémentaires</label>
+            <textarea rows="3" placeholder="Précisez votre demande..." className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg"></textarea>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowHrReqModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Envoyer Demande</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowHrReqModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Envoyer Demande</button>
           </div>
         </form>
       </Modal>
 
       {/* 8. Modal Nouveau Département */}
       <Modal isOpen={showDeptModal} onClose={() => setShowDeptModal(false)} title="Créer un Nouveau Département">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau département créé!"); setShowDeptModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau département créé!"); setShowDeptModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Nom du département *</label>
-            <input type="text" required placeholder="Ex: Recherche & Développement" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Nom du département *</label>
+            <input type="text" required placeholder="Ex: Recherche & Développement" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
           </div>
           <div>
-            <label className="font-semibold block mb-1">Responsable de Pôle</label>
-            <input type="text" placeholder="Nom du responsable..." className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Responsable de Pôle</label>
+            <input type="text" placeholder="Nom du responsable..." className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowDeptModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Créer Département</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowDeptModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Créer Département</button>
           </div>
         </form>
       </Modal>
 
       {/* 9. Modal Nouveau Poste */}
       <Modal isOpen={showPosModal} onClose={() => setShowPosModal(false)} title="Créer un Nouveau Poste">
-        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau poste configuré!"); setShowPosModal(false); }} className="space-y-4 text-xs">
+        <form onSubmit={(e) => { e.preventDefault(); showFeedback("Nouveau poste configuré!"); setShowPosModal(false); }} className="space-y-4 text-xs text-[#F7F1E7]">
           <div>
-            <label className="font-semibold block mb-1">Intitulé du poste *</label>
-            <input type="text" required placeholder="Ex: UX/UI Designer Senior" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+            <label className="font-semibold block mb-1 text-[#B8A9BD]">Intitulé du poste *</label>
+            <input type="text" required placeholder="Ex: UX/UI Designer Senior" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="font-semibold block mb-1">Salaire Min (MAD)</label>
-              <input type="number" defaultValue="7000" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Salaire Min (MAD)</label>
+              <input type="number" defaultValue="7000" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
             <div>
-              <label className="font-semibold block mb-1">Salaire Max (MAD)</label>
-              <input type="number" defaultValue="15000" className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="font-semibold block mb-1 text-[#B8A9BD]">Salaire Max (MAD)</label>
+              <input type="number" defaultValue="15000" className="w-full p-2 bg-[#100817] border border-white/10 text-[#F7F1E7] focus:border-[#D9AE3A] outline-none rounded-lg" />
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onClick={() => setShowPosModal(false)} className="px-4 py-2 bg-slate-100 font-semibold rounded-xl">Annuler</button>
-            <button type="submit" className="btn-primary">Créer Poste</button>
+          <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+            <button type="button" onClick={() => setShowPosModal(false)} className="px-4 py-2 bg-[#100817] text-[#B8A9BD] hover:text-[#F7F1E7] font-semibold rounded-xl cursor-pointer border border-white/10">Annuler</button>
+            <button type="submit" className="bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-extrabold px-4 py-2 rounded-xl transition-all cursor-pointer">Créer Poste</button>
           </div>
         </form>
       </Modal>

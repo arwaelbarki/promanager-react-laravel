@@ -1,641 +1,792 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
-  ArrowRight, 
   LogIn, 
   Briefcase, 
   Calendar, 
   Clock, 
   FolderOpen, 
-  Sparkles, 
+  ChevronRight,
+  ShieldCheck,
+  CheckCircle2,
+  Star,
+  Building2,
+  Search,
+  LayoutGrid,
+  Sun,
+  User,
+  Sparkles,
+  Award,
   FileText,
-  ChevronRight
+  Check,
+  ArrowUpRight,
+  Play,
+  Globe,
+  Menu,
+  X,
+  FileCheck,
+  TrendingUp,
+  AlertTriangle,
+  ArrowRight
 } from 'lucide-react';
 
-const LandingView = ({ onGoToLogin, onDirectDemoLogin }) => {
-  const [activeShowcaseTab, setActiveShowcaseTab] = useState('dashboard');
+const LandingView = ({ onGoToLogin }) => {
+  const [emailInput, setEmailInput] = useState('');
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pricingCycle, setPricingCycle] = useState('annual'); // 'monthly' | 'annual'
 
-  const heroBadgeVariant = {
-    hidden: { opacity: 0, y: -12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
+  // Mouse tilt effect state for Hero product composition
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    const x = (clientX / innerWidth - 0.5) * 8;
+    const y = (clientY / innerHeight - 0.5) * 8;
+    setTilt({ x, y });
   };
 
-  const heroTitleVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.45, delay: 0.1, ease: 'easeOut' } }
+  const handleEmailSubmit = (e) => {
+    e.preventDefault();
+    if (onGoToLogin) onGoToLogin();
   };
 
-  const heroDescVariant = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2, ease: 'easeOut' } }
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } 
+    }
   };
 
-  const heroButtonsVariant = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.55, delay: 0.3, ease: 'easeOut' } }
-  };
-
-  const heroMockupVariant = {
-    hidden: { opacity: 0, scale: 0.96, y: 24 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.65, delay: 0.4, ease: [0.16, 1, 0.3, 1] } }
-  };
-
-  const sectionScrollVariant = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.06
+      }
+    }
   };
 
   return (
-    <div className="landing-page relative min-h-screen bg-gradient-to-b from-[#0B1B33] via-[#071120] to-[#050B14] text-white font-sans selection:bg-[#14B8A6] selection:text-white overflow-x-hidden">
+    <div 
+      className="landing-page relative min-h-screen bg-[#100817] text-[#F7F1E7] font-sans selection:bg-[#D9AE3A] selection:text-[#100817] overflow-x-hidden"
+      onMouseMove={handleMouseMove}
+    >
       
-      {/* 1. OVERLAY GRID PERSPECTIVE & BLOBS TEAL/GOLD */}
-      <div className="absolute inset-0 grid-perspective pointer-events-none -z-10"></div>
-      <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#14B8A6]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
-      <div className="absolute top-1/3 -left-40 w-96 h-96 bg-[#0F766E]/25 rounded-full blur-3xl pointer-events-none -z-10"></div>
-      <div className="absolute top-1/2 right-10 w-80 h-80 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
-
-      {/* 2. NAVBAR GLASS-DARK */}
-      <header className="sticky top-0 z-50 glass-dark border-b border-teal-500/20 px-6 sm:px-8 select-none">
-        <div className="max-w-7xl mx-auto h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-white shrink-0 shadow-glow-teal">
-              <Users className="w-6 h-6 text-white" />
+      {/* 1. NAVBAR FIXE EN HAUT ET RAFFINÉE */}
+      <header 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 select-none ${
+          scrolled 
+            ? 'bg-[#100817]/85 backdrop-blur-[18px] border-b border-white/[0.08] shadow-2xl py-3.5' 
+            : 'bg-transparent py-5 sm:py-6 border-b border-white/[0.04]'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
+          
+          {/* Logo à gauche : "A" dans un carré arrondi + Amsoft People + sous-titre */}
+          <div 
+            className="flex items-center gap-3.5 cursor-pointer group" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            {/* Carré arrondi avec la lettre "A" */}
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#211027] to-[#100817] border border-[#D9AE3A]/40 flex items-center justify-center shrink-0 shadow-md group-hover:border-[#D9AE3A] transition-colors duration-300 font-serif font-bold text-lg text-[#E8C65A]">
+              A
             </div>
             <div>
-              <span className="font-extrabold text-lg text-white tracking-tight block leading-none">
+              <span className="font-serif font-bold text-base text-[#F7F1E7] tracking-tight block leading-none">
                 Amsoft People
               </span>
-              <span className="text-[11px] text-teal-300/80 font-medium mt-1 block">Solution RH B2B High-Tech</span>
+              <span className="font-mono-data text-[10px] text-[#B8A9BD] mt-1 block tracking-[0.18em] uppercase">
+                RH MAROC • PAIE &amp; CNSS
+              </span>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
-            <a href="#hero" className="hover:text-[#14B8A6] transition-colors">Accueil</a>
-            <a href="#fonctionnalites" className="hover:text-[#14B8A6] transition-colors">Fonctionnalités</a>
-            <a href="#comment-ca-marche" className="hover:text-[#14B8A6] transition-colors">Comment ça marche</a>
-            <a href="#apercu" className="hover:text-[#14B8A6] transition-colors">Aperçu Produit</a>
+          {/* Navigation au centre : Accueil, Aperçu, Modules, Méthode, Avis DRH, Tarification */}
+          <nav className="hidden md:flex items-center gap-8 text-[13px] font-medium text-[#B8A9BD]">
+            <a href="#hero" className="nav-link-item hover:text-[#F7F1E7]">Accueil</a>
+            <a href="#apercu" className="nav-link-item hover:text-[#F7F1E7]">Aperçu</a>
+            <a href="#modules" className="nav-link-item hover:text-[#F7F1E7]">Modules</a>
+            <a href="#methode" className="nav-link-item hover:text-[#F7F1E7]">Méthode</a>
+            <a href="#avis" className="nav-link-item hover:text-[#F7F1E7]">Avis DRH</a>
+            <a href="#tarifs" className="nav-link-item hover:text-[#F7F1E7]">Tarification</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(20,184,166,0.5)" }}
-              whileTap={{ scale: 0.98 }}
+          {/* Bouton à droite : "Connexion" avec flèche, fond jaune/doré, texte noir */}
+          <div className="hidden md:flex items-center">
+            <button
               onClick={onGoToLogin}
-              className="glow-border text-xs px-5 py-2.5 font-bold text-white cursor-pointer flex items-center gap-2 rounded-lg transition-all duration-300"
+              className="px-4.5 py-2 text-xs font-bold text-[#100817] bg-[#D9AE3A] hover:bg-[#E8C65A] rounded-xl border border-[#D9AE3A]/40 transition-all duration-300 cursor-pointer shadow-sm shadow-[#D9AE3A]/10 flex items-center gap-1.5 active:scale-95"
             >
-              <span>Se connecter</span>
-              <LogIn className="w-4 h-4 text-teal-300" />
-            </motion.button>
+              <LogIn className="w-3.5 h-3.5 stroke-[2.2]" />
+              <span>Connexion</span>
+            </button>
           </div>
+
+          {/* Bouton Menu Mobile */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-[#F7F1E7] p-2 rounded-xl hover:bg-white/10 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+
         </div>
       </header>
 
-      {/* 3. HERO SECTION SOMBRE AVEC TEXT-GRADIENT-PREMIUM ULTRA LUMINEUX & MOCKUP VISIBLE */}
-      <section id="hero" className="relative pt-16 sm:pt-24 pb-24 max-w-7xl mx-auto px-6 text-center">
-        <div className="space-y-10">
-          
-          <motion.div initial="hidden" animate="visible" variants={heroBadgeVariant} className="flex justify-center">
-            <div className="glass-dark px-4 py-2 rounded-full border border-teal-500/30 text-xs font-bold text-teal-300 tracking-wider uppercase inline-flex items-center gap-2.5 shadow-glow-teal">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#14B8A6] animate-ping"></span>
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-              <span>Logiciel RH B2B SaaS Premium</span>
+      {/* Menu Mobile Overlay Plein Écran */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-40 bg-[#100817] text-[#F7F1E7] pt-24 px-8 flex flex-col justify-between pb-12 md:hidden"
+          >
+            <div className="space-y-6 font-serif text-2xl">
+              <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Accueil</a>
+              <a href="#apercu" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Aperçu</a>
+              <a href="#modules" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Modules</a>
+              <a href="#methode" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Méthode</a>
+              <a href="#avis" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Avis DRH</a>
+              <a href="#tarifs" onClick={() => setMobileMenuOpen(false)} className="block py-2 border-b border-white/10">Tarification</a>
+            </div>
+
+            <div className="space-y-3 pt-6 border-t border-white/10">
+              <button
+                onClick={() => { setMobileMenuOpen(false); onGoToLogin(); }}
+                className="w-full py-3.5 bg-[#D9AE3A] text-[#100817] font-bold rounded-xl text-sm flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-4 h-4 stroke-[2.2]" />
+                Connexion
+              </button>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
 
-          <motion.div initial="hidden" animate="visible" variants={heroTitleVariant}>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gradient-premium tracking-tight leading-[1.1] max-w-5xl mx-auto drop-shadow-[0_0_35px_rgba(20,184,166,0.35)]">
-              La gestion des ressources humaines, simple et centralisée.
-            </h1>
-          </motion.div>
+      {/* 2. SECTION HERO — FOND AVEC RÉSEAU GÉOMÉTRIQUE ABSTRAIT DISCRET */}
+      <section 
+        id="hero" 
+        className="relative text-[#F7F1E7] pt-20 sm:pt-24 pb-20 px-6 sm:px-8 overflow-hidden border-b border-white/[0.08]"
+        style={{ background: 'linear-gradient(180deg, #100817 0%, #1C0F24 100%)' }}
+      >
+        {/* Lignes Géométriques Abstraites Discrètes en Fond (Profondeur Visuelle) */}
+        <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden select-none">
+          <svg className="w-full h-full" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M-100 200 L300 50 L600 400 L900 150 L1300 500" stroke="#D9AE3A" strokeWidth="1.5" strokeDasharray="6 6" />
+            <path d="M100 700 L450 300 L800 650 L1150 250" stroke="#E8C65A" strokeWidth="1" />
+            <circle cx="300" cy="50" r="4" fill="#D9AE3A" />
+            <circle cx="600" cy="400" r="5" fill="#E8C65A" />
+            <circle cx="900" cy="150" r="4" fill="#D9AE3A" />
+            <circle cx="450" cy="300" r="5" fill="#E8C65A" />
+            <polygon points="600,400 900,150 800,650" stroke="#D9AE3A" strokeWidth="0.75" />
+            <polygon points="300,50 600,400 450,300" stroke="#D9AE3A" strokeWidth="0.75" />
+          </svg>
+        </div>
 
-          <motion.div initial="hidden" animate="visible" variants={heroDescVariant}>
-            <p className="text-base sm:text-lg text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed">
-              Pilotez vos effectifs, contrats, demandes de congés, pointages en temps réel et coffre-fort documentaire dans une plateforme au design épuré et ultra-performant.
-            </p>
-          </motion.div>
+        {/* Lumières d'ambiance radiales subtiles */}
+        <div className="absolute top-1/4 right-10 w-[500px] h-[500px] bg-[#D9AE3A]/[0.05] rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-[#2B1535]/30 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <motion.div initial="hidden" animate="visible" variants={heroButtonsVariant} className="pt-2 flex items-center justify-center gap-5 flex-wrap">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 35px rgba(20,184,166,0.6)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onGoToLogin}
-              className="btn-primary bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#0F766E] px-8 py-4 text-xs sm:text-sm font-extrabold flex items-center gap-3 text-white rounded-xl shadow-glow-teal cursor-pointer transition-all duration-300"
-            >
-              <span>Accéder à l'Espace RH</span>
-              <ArrowRight className="w-5 h-5 text-white" />
-            </motion.button>
-
-            <motion.a
-              whileHover={{ scale: 1.05, borderColor: "rgba(20,184,166,0.6)" }}
-              whileTap={{ scale: 0.98 }}
-              href="#fonctionnalites"
-              className="glass-dark text-slate-200 px-7 py-4 text-xs sm:text-sm font-bold flex items-center gap-2.5 rounded-xl border border-teal-500/30 hover:text-white transition-all duration-300 cursor-pointer"
-            >
-              <span>Découvrir les fonctionnalités</span>
-              <ChevronRight className="w-4 h-4 text-teal-400" />
-            </motion.a>
-          </motion.div>
-
-          {/* DASHBOARD MOCKUP (GLASS-DARK + GLOW-BORDER + AJUSTEMENT 4 KPI BG-WHITE/10) */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-16 items-center relative z-10">
+          
+          {/* SECTION HERO (GAUCHE) */}
           <motion.div 
-            initial="hidden" 
-            animate="visible" 
-            variants={heroMockupVariant} 
-            className="pt-8 max-w-6xl mx-auto relative"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="lg:col-span-7 space-y-9 text-left"
           >
-            <div className="absolute -inset-2 bg-gradient-to-r from-[#14B8A6]/30 via-[#D4AF37]/20 to-[#0F766E]/30 rounded-3xl blur-2xl pointer-events-none"></div>
+            
+            {/* Pastille (Badge) : Conçu à Casablanca • Conforme au Droit du Travail Marocain */}
+            <motion.div variants={fadeInUp}>
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-[#160B1D]/80 border border-[rgba(217,174,58,0.22)] rounded-full text-[11px] font-mono-data text-[#E8C65A] tracking-wider uppercase shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#D9AE3A] animate-pulse"></span>
+                <span>Conçu à Casablanca • Conforme au Droit du Travail Marocain</span>
+              </div>
+            </motion.div>
 
-            <div className="relative rounded-3xl glass-dark glow-border p-6 sm:p-8 text-left shadow-glow-teal overflow-hidden">
-              
-              <div className="flex items-center justify-between pb-4 mb-6 border-b border-teal-500/20">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-3.5 h-3.5 rounded-full bg-rose-500/80"></span>
-                  <span className="w-3.5 h-3.5 rounded-full bg-amber-500/80"></span>
-                  <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/80"></span>
-                  <span className="text-xs font-mono text-slate-300 ml-3">app.amsoft-people.ma/dashboard</span>
+            {/* Titre principal : "La gestion RH, intelligente & centralisée." */}
+            <motion.h1 
+              variants={fadeInUp}
+              className="font-serif text-[2.75rem] sm:text-5xl lg:text-[5.5rem] font-extrabold tracking-[-0.045em] leading-[0.95]"
+            >
+              <span className="text-white">La gestion RH,</span> <br />
+              <span className="font-serif italic font-normal text-[#E8C65A]">intelligente &amp;</span>{' '}
+              <span className="relative inline-block text-white">
+                centralisée.
+                <motion.span 
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute bottom-1 left-0 w-full h-[2.5px] bg-[#D9AE3A] origin-left"
+                />
+              </span>
+            </motion.h1>
+
+            {/* Paragraphe descriptif avec contraste et luminosité renforcés (text-gray-200 / text-[#E2D9E7]) */}
+            <motion.p variants={fadeInUp} className="text-[#E2D9E7] text-base sm:text-lg leading-[1.7] max-w-[620px] font-medium opacity-95">
+              Pilotez vos effectifs, contrats, congés, pointages et paie conforme (CNSS, AMO, IR, CIMR) avec un outil sobre, rigoureux et pensé pour les entreprises au Maroc.
+            </motion.p>
+
+            {/* Formulaire & SECTION CTA (Hiérarchie visuelle différenciée pour le prospect) */}
+            <motion.div variants={fadeInUp} className="space-y-4 pt-1">
+              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 max-w-lg">
+                <div className="relative flex-1">
+                  <input
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    placeholder="Saisissez votre email professionnel..."
+                    className="w-full bg-white/[0.025] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-[#F7F1E7] placeholder:text-[#B8A9BD]/50 focus:outline-none focus:border-[#D9AE3A]/65 focus:ring-4 focus:ring-[#D9AE3A]/8 transition-all duration-300"
+                  />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-300 text-xs font-bold border border-teal-500/30">
-                    <span className="w-2 h-2 rounded-full bg-[#14B8A6] animate-pulse"></span>
-                    Système RH Temps Réel
+                {/* Bouton "Accéder à l'espace RH" (Style distinctif d'or précieux avec contour renforcé) */}
+                <button
+                  type="submit"
+                  className="px-6 py-3.5 bg-[#211027]/90 hover:bg-[#D9AE3A] text-[#E8C65A] hover:text-[#100817] border-2 border-[#D9AE3A] font-extrabold text-xs rounded-xl transition-all duration-300 cursor-pointer shadow-lg shadow-[#D9AE3A]/15 flex items-center justify-center gap-2 group hover:-translate-y-0.5 active:translate-y-0 shrink-0 backdrop-blur-md"
+                >
+                  <span>Accéder à l'espace RH</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.2] group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+              </form>
+
+              {/* Ligne de réassurance discrète */}
+              <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono-data text-[#B8A9BD]/60 pt-1">
+                <span>✓ Conçu pour les entreprises marocaines</span>
+                <span>·</span>
+                <span>✓ Déploiement accompagné</span>
+                <span>·</span>
+                <span>✓ Données centralisées</span>
+              </div>
+            </motion.div>
+
+          </motion.div>
+
+          {/* SECTION HERO (DROITE) - MOCKUP INTERACTIF */}
+          <motion.div 
+            initial={{ opacity: 0, x: 35 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 relative pt-4 pb-8"
+            style={{
+              transform: `perspective(1600px) rotateY(${tilt.x}deg) rotateX(${-tilt.y}deg)`,
+              transition: 'transform 0.15s ease-out'
+            }}
+          >
+            {/* Douce lueur dorée derrière le mockup */}
+            <div className="absolute -inset-6 bg-[#D9AE3A]/[0.08] rounded-3xl blur-3xl pointer-events-none"></div>
+
+            {/* CONTAINER COMPOSITION PRODUIT */}
+            <div className="relative">
+              
+              {/* Carte principale simulant un tableau de bord */}
+              <motion.div 
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="bg-[#24122F] border border-[rgba(217,174,58,0.16)] rounded-2xl p-5 sm:p-6 shadow-[0_35px_90px_rgba(0,0,0,0.38)] relative overflow-hidden text-left"
+              >
+                {/* En-tête : 3 points (rouge, jaune, vert) + "Tableau de Bord Paie & CNSS" */}
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3.5 mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span className="ml-2 font-serif font-bold text-xs text-[#F7F1E7]">Tableau de Bord Paie &amp; CNSS</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono-data font-semibold border border-emerald-500/30">
+                    CNSS Conforme
                   </span>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                <div className="md:col-span-8 space-y-5">
-                  {/* AJUSTEMENT 4 : CARTES KPI AVEC BG-WHITE/10 ET BORDER-WHITE/15 POUR UNE VISIBILITÉ ACCRUE */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-                    <motion.div 
-                      whileHover={{ y: -4, scale: 1.02 }} 
-                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
-                    >
-                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Effectif Total</div>
-                      <div className="flex items-baseline justify-between mt-2">
-                        <span className="text-2xl font-mono font-extrabold text-white">248</span>
-                        <span className="text-xs font-bold text-emerald-400">+12%</span>
-                      </div>
-                      <div className="text-[10px] text-slate-300 font-medium mt-1">Actifs en poste</div>
-                    </motion.div>
+                {/* Subtitle / Badge "MOIS EN COURS • OCTOBRE 2026" */}
+                <div className="text-xs font-mono-data text-[#E2D9E7] mb-4 font-semibold tracking-wide flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D9AE3A]"></span>
+                  <span>MOIS EN COURS • OCTOBRE 2026</span>
+                </div>
 
-                    <motion.div 
-                      whileHover={{ y: -4, scale: 1.02 }} 
-                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
-                    >
-                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Congés Attente</div>
-                      <div className="flex items-baseline justify-between mt-2">
-                        <span className="text-2xl font-mono font-extrabold text-[#14B8A6]">12</span>
-                        <span className="text-xs font-bold text-[#14B8A6]">À valider</span>
-                      </div>
-                      <div className="text-[10px] text-slate-300 font-medium mt-1">Demandes reçues</div>
-                    </motion.div>
-
-                    <motion.div 
-                      whileHover={{ y: -4, scale: 1.02 }} 
-                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
-                    >
-                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Absences Jour</div>
-                      <div className="flex items-baseline justify-between mt-2">
-                        <span className="text-2xl font-mono font-extrabold text-white">8</span>
-                        <span className="text-xs font-bold text-slate-300 font-medium">Justifiées</span>
-                      </div>
-                      <div className="text-[10px] text-slate-300 font-medium mt-1">Maladie / Autoris.</div>
-                    </motion.div>
-
-                    <motion.div 
-                      whileHover={{ y: -4, scale: 1.02 }} 
-                      className="p-4 bg-white/10 border border-white/15 rounded-xl transition-all shadow-soft hover:shadow-glow-teal hover:border-teal-400/50 backdrop-blur-md"
-                    >
-                      <div className="text-[11px] text-slate-300 font-semibold uppercase">Échéances CDD</div>
-                      <div className="flex items-baseline justify-between mt-2">
-                        <span className="text-2xl font-mono font-extrabold text-[#D4AF37]">5</span>
-                        <span className="text-xs font-bold text-[#D4AF37]">30 jours</span>
-                      </div>
-                      <div className="text-[10px] text-slate-300 font-medium mt-1">Fin de CDD / Essai</div>
-                    </motion.div>
+                {/* Deux blocs de données : "EFFECTIF ACTIF" (248 salariés) et "MASSE SALARIALE" (1 420 000 MAD) */}
+                <div className="grid grid-cols-2 gap-3 text-left">
+                  <div className="bg-[#100817]/70 p-3.5 rounded-xl border border-white/[0.06]">
+                    <span className="text-[10px] text-[#B8A9BD] block font-mono-data uppercase tracking-wider">EFFECTIF ACTIF</span>
+                    <span className="font-mono-data text-xl font-bold text-[#F7F1E7] mt-0.5 block">248 salariés</span>
                   </div>
-
-                  {/* AJUSTEMENT 4 : TABLEAU DES DEMANDES EN BG-WHITE/10 */}
-                  <div className="bg-white/10 border border-white/15 rounded-xl p-5 space-y-4 backdrop-blur-md">
-                    <div className="flex items-center justify-between text-xs pb-3 border-b border-white/15">
-                      <span className="font-bold text-white uppercase tracking-wider text-xs">Dernières Demandes RH À Traiter</span>
-                      <span className="text-xs font-semibold text-[#14B8A6]">Direct Sync</span>
-                    </div>
-
-                    <div className="space-y-2.5 text-xs">
-                      <motion.div 
-                        whileHover={{ y: -2 }}
-                        className="p-3 bg-[#0B1B33]/90 rounded-xl flex items-center justify-between border border-teal-500/20 hover:border-teal-400/40 transition-all cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-9 h-9 rounded-full bg-[#14B8A6]/20 text-[#14B8A6] font-bold text-xs flex items-center justify-center border border-[#14B8A6]/40">
-                            AB
-                          </div>
-                          <div>
-                            <div className="font-bold text-white">Ahmed Benali</div>
-                            <div className="text-[11px] text-slate-300 font-medium">Congé annuel • 8 jours (01/10 au 10/10)</div>
-                          </div>
-                        </div>
-                        <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 font-bold text-[10px] rounded-md border border-amber-500/40">
-                          En attente RH
-                        </span>
-                      </motion.div>
-                    </div>
+                  <div className="bg-[#100817]/70 p-3.5 rounded-xl border border-white/[0.06]">
+                    <span className="text-[10px] text-[#B8A9BD] block font-mono-data uppercase tracking-wider">MASSE SALARIALE</span>
+                    <span className="font-mono-data text-xl font-bold text-[#E8C65A] mt-0.5 block">1 420 000 MAD</span>
                   </div>
                 </div>
 
-                <div className="md:col-span-4 space-y-4">
-                  <motion.div 
-                    animate={{ y: [0, -4, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="p-5 bg-gradient-to-br from-[#0B1B33] to-[#050B14] text-white rounded-xl border border-teal-500/50 space-y-3 shadow-glow-teal"
-                  >
-                    <div className="flex items-center justify-between text-xs text-teal-300 font-semibold tracking-wider">
-                      <span>MODULE POINTAGE</span>
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#14B8A6] animate-ping"></span>
-                    </div>
-                    <div className="font-mono text-3xl font-extrabold text-white text-gradient-premium">08:45:12</div>
-                    <div className="text-xs text-slate-200 font-medium">Pointage enregistré pour 240 collaborateurs aujourd'hui</div>
-                  </motion.div>
+                {/* Mini Graphique d'Assiduité */}
+                <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                  <div className="flex justify-between items-center text-[10px] font-mono-data text-[#B8A9BD] mb-1.5">
+                    <span>Présences Mensuelles</span>
+                    <span className="text-[#E8C65A]">96.8% moy.</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#D9AE3A] to-[#E8C65A] rounded-full w-[96.8%]"></div>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
+
+              {/* Carte flottante en dessous : "Youssef El Amrani", "Congé Payé - 5 jours (Casablanca)", bouton "Valider" jaune */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.35, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute -bottom-6 -left-4 sm:-left-8 z-30 w-[88%] sm:w-[290px] bg-[#F7F1E7] text-[#100817] border border-[rgba(217,174,58,0.3)] rounded-2xl p-4 shadow-[0_25px_60px_rgba(0,0,0,0.45)] backdrop-blur-md text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[#211027] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                      YA
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs text-[#100817]">Youssef El Amrani</div>
+                      <div className="text-[10px] text-[#6E6375] font-medium mt-0.5">Congé Payé - 5 jours (Casablanca)</div>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1.5 rounded-xl bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] text-[10px] font-extrabold cursor-pointer transition-colors shadow-xs shrink-0 ml-2">
+                    Valider ✓
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Badge d'alerte flottant en haut à droite : Icône d'avertissement, "3 contrats CDD expirent", "Examiner sous 30j" */}
+              <motion.div 
+                initial={{ opacity: 0, y: -20, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute -top-5 -right-3 sm:-right-6 z-30 bg-[#211027]/95 text-[#F7F1E7] border border-white/10 rounded-xl px-4 py-3 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md flex items-center gap-3 text-left"
+              >
+                <div className="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-4 h-4 stroke-[2]" />
+                </div>
+                <div>
+                  <span className="text-[#B8A9BD] text-[11px] block leading-tight">3 contrats CDD expirent</span>
+                  <span className="text-[#E8C65A] font-mono-data text-[10px] font-bold">Examiner sous 30j →</span>
+                </div>
+              </motion.div>
 
             </div>
           </motion.div>
+
         </div>
       </section>
 
-      {/* ====================================================================
-          4. SECTION FONCTIONNALITÉS (AJUSTEMENT 2: BORDER-Y BORDER-TEAL-500/10)
-         ==================================================================== */}
-      <section id="fonctionnalites" className="py-24 bg-[#050B14] border-y border-teal-500/10 relative">
+      {/* 3. BANDE DE CONFIANCE & SIGNAUX CONFORMITÉ MAROC */}
+      <section className="py-7 bg-[#100817] border-b border-white/[0.08] select-none text-[#B8A9BD]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 flex flex-wrap items-center justify-between gap-6 text-xs font-mono-data">
+          <div className="flex items-center gap-2 text-[#F7F1E7]">
+            <ShieldCheck className="w-4 h-4 text-[#D9AE3A]" />
+            <span className="font-bold tracking-wider">CONFORMITÉ MAROCAINE CERTIFIÉE</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-6 sm:gap-10 opacity-80">
+            <span>CNSS (Teledeclarations.ma)</span>
+            <span>•</span>
+            <span>Code du Travail Marocain</span>
+            <span>•</span>
+            <span>Impôt sur le Revenu (IR)</span>
+            <span>•</span>
+            <span>AMO &amp; CIMR</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. APERÇU MODULES — BENTO GRID ASYMÉTRIQUE (Fond Crème #F7F1E7) */}
+      <section id="modules" className="py-28 bg-[#F7F1E7] text-[#100817] border-b border-[#E5DEC9]">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          variants={sectionScrollVariant}
-          className="max-w-7xl mx-auto px-6 sm:px-8"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={fadeInUp}
+          className="max-w-7xl mx-auto px-6 sm:px-8 space-y-16"
         >
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Modules &amp; Fonctionnalités RH</h2>
-            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Tout ce dont votre service RH a besoin
-            </p>
-            <p className="text-sm sm:text-base text-slate-300 font-medium">
-              Une suite complète d'outils interconnectés pour piloter vos effectifs avec rigueur et précision.
+          <div className="text-left max-w-2xl space-y-3">
+            <span className="text-xs font-bold text-[#D9AE3A] uppercase tracking-wider font-mono-data">
+              MODULES RH HAUTE PRÉCISION
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#100817] tracking-tight">
+              Une architecture pensée pour le travail réel
+            </h2>
+            <p className="text-sm sm:text-base text-[#6E6375] font-normal leading-relaxed">
+              Fini les grilles génériques. Chaque module répond à une obligation légale ou administrative spécifique au Maroc.
             </p>
           </div>
 
-          {/* Bento Editorial Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            {/* Feature 1: Large Primary Bento Card */}
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="md:col-span-8 glass-dark border border-teal-500/20 rounded-3xl p-7 sm:p-9 space-y-6 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
-            >
-              <div className="flex items-start justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
-                  <Users className="w-6 h-6" />
+          {/* BENTO GRID (Composition 5 cartes asymétriques) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+            
+            {/* CARTE BENTO 1 (Majeure - 7 cols) : Registre Unique & Dossiers */}
+            <div className="md:col-span-7 bg-[#100817] text-[#F7F1E7] rounded-2xl p-8 border border-white/10 flex flex-col justify-between group hover:border-[#D9AE3A]/50 transition-all duration-300 relative overflow-hidden shadow-xl text-left">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-[#211027] border border-white/10 text-[#E8C65A] flex items-center justify-center font-bold font-mono-data">
+                  01
                 </div>
-                {/* AJUSTEMENT 3 : BADGE MODULE CENTRAL AVEC GLASS-DARK & BORDER TEAL-500/40 */}
-                <span className="px-3 py-1 glass-dark text-teal-300 rounded-full text-[10px] font-bold uppercase tracking-wider border border-teal-500/40">
-                  Module Central
-                </span>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white tracking-tight mb-3">Gestion des Collaborateurs &amp; Registre Unique</h3>
-                <p className="text-sm text-slate-300 leading-relaxed font-medium">
-                  Centralisez les dossiers individuels, coordonnées, fonctions, salaires bruts et statuts administratifs de chaque employé avec une recherche multicritères instantanée.
+                <h3 className="font-serif text-2xl font-bold text-[#F7F1E7]">
+                  Registre Unique &amp; Dossiers Collaborateurs
+                </h3>
+                <p className="text-xs text-[#B8A9BD] leading-relaxed max-w-lg">
+                  Suivi des contrats CDI, CDD, ANAPEC, CIN, affectations par département, salaire de base et historique des cotisations CNSS en un endroit centralisé.
                 </p>
               </div>
 
-              {/* Roster Mini UI Preview */}
-              <div className="p-4 bg-[#050B14]/80 border border-teal-500/20 rounded-2xl space-y-3 text-xs">
-                <div className="flex items-center justify-between font-mono text-slate-400 font-medium pb-2 border-b border-teal-500/15">
-                  <span>MATRICULE • NOM</span>
-                  <span>DEPARTEMENT</span>
-                  <span>STATUT</span>
+              {/* Mini Demo Registre */}
+              <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-3 gap-3 text-[11px] font-mono-data">
+                <div className="p-3 bg-[#211027] rounded-xl border border-white/5">
+                  <span className="text-[#B8A9BD] block text-[10px]">Contrats CDI</span>
+                  <span className="text-[#E8C65A] font-bold text-xs mt-0.5 block">198 actifs</span>
                 </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white text-xs font-bold flex items-center justify-center">AB</div>
-                    <span className="font-bold text-white">Ahmed Benali</span>
-                  </div>
-                  <span className="text-slate-300 font-medium">Tech / Informatique</span>
-                  <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-500/30">Actif</span>
+                <div className="p-3 bg-[#211027] rounded-xl border border-white/5">
+                  <span className="text-[#B8A9BD] block text-[10px]">ANAPEC / CDD</span>
+                  <span className="text-white font-bold text-xs mt-0.5 block">50 actifs</span>
                 </div>
-                <div className="flex items-center justify-between py-1.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center">FA</div>
-                    <span className="font-bold text-white">Fatine Alaoui</span>
-                  </div>
-                  <span className="text-slate-300 font-medium">Ressources Humaines</span>
-                  <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-400 text-[10px] font-bold rounded-md border border-emerald-500/30">Actif</span>
+                <div className="p-3 bg-[#211027] rounded-xl border border-white/5">
+                  <span className="text-[#B8A9BD] block text-[10px]">Statut CNSS</span>
+                  <span className="text-emerald-400 font-bold text-xs mt-0.5 block">100% à jour</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Feature 2: Congés & Absences */}
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 sm:p-9 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold mb-5 shadow-glow-teal">
-                  <Calendar className="w-6 h-6" />
+            {/* CARTE BENTO 2 (5 cols) : Congés & Solde */}
+            <div className="md:col-span-5 bg-white border border-[#E5DEC9] rounded-2xl p-8 flex flex-col justify-between group hover:border-[#100817]/30 transition-all duration-300 shadow-sm text-left">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#F7F1E7] text-[#100817] flex items-center justify-center font-bold font-mono-data">
+                  02
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight mb-2">Congés, RTT &amp; Absences</h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                  Circuit de validation des demandes de congé annuel, maladie ou exceptionnel avec calcul automatique du solde restant.
+                <h3 className="font-serif text-xl font-bold text-[#100817]">
+                  Congés &amp; Solde en Temps Réel
+                </h3>
+                <p className="text-xs text-[#6E6375] leading-relaxed">
+                  Décompte automatique des 1.5 jours par mois selon le Code du travail marocain avec validation en 1-clic.
                 </p>
               </div>
 
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <Clock className="w-4 h-4 text-amber-400" />
-                  <span className="font-bold text-amber-300">Demande en attente</span>
-                </div>
-                <span className="font-mono text-xs font-bold text-amber-200">CONG-2026-001</span>
+              {/* Calendrier Mini Interactive State */}
+              <div className="mt-6 p-3.5 bg-[#FAF6F0] rounded-xl border border-[#E5DEC9] flex items-center justify-between text-xs font-mono-data">
+                <span className="font-bold text-[#100817]">OCTOBRE 2026</span>
+                <span className="px-2.5 py-1 bg-[#D9AE3A] text-[#100817] font-bold rounded-lg text-[11px]">5j validés</span>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Feature 3: Pointage Temps Réel */}
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
-                <Clock className="w-6 h-6" />
+            {/* CARTE BENTO 3 (4 cols) : Pointage & Assiduité */}
+            <div className="md:col-span-4 bg-white border border-[#E5DEC9] rounded-2xl p-6 space-y-4 group hover:border-[#100817]/30 transition-all duration-300 shadow-sm text-left">
+              <div className="w-9 h-9 rounded-xl bg-[#F7F1E7] text-[#100817] flex items-center justify-center font-bold text-xs font-mono-data">
+                03
               </div>
-              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Pointage &amp; Suivi des Présences</h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Enregistrement des heures d'arrivée, décompte des heures de travail et détection des retards.
+              <h4 className="font-serif font-bold text-lg text-[#100817]">Pointage &amp; Présences</h4>
+              <p className="text-xs text-[#6E6375] leading-relaxed">
+                Graphique interactif d'assiduité mensuelle et export des retards pour la paie.
               </p>
-              <div className="pt-3 flex items-center justify-between text-xs font-mono border-t border-teal-500/15">
-                <span className="text-slate-400">Total Cumulé :</span>
-                <span className="font-bold text-[#14B8A6]">8h 30m / jour</span>
+              <div className="pt-2">
+                <svg className="w-full h-10" viewBox="0 0 200 40" fill="none">
+                  <path d="M0 30 Q 50 10, 100 20 T 200 15" stroke="#2F8F83" strokeWidth="2.5" fill="none" />
+                </svg>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Feature 4: Coffre-Fort Documents */}
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
-                <FolderOpen className="w-6 h-6" />
+            {/* CARTE BENTO 4 (4 cols) : Contrats & Alertes CDD */}
+            <div className="md:col-span-4 bg-white border border-[#E5DEC9] rounded-2xl p-6 space-y-4 group hover:border-[#100817]/30 transition-all duration-300 shadow-sm text-left">
+              <div className="w-9 h-9 rounded-xl bg-[#F7F1E7] text-rose-600 flex items-center justify-center font-bold text-xs font-mono-data">
+                04
               </div>
-              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Documents &amp; Attestations</h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Stockage sécurisé des contrats PDF, CIN, diplômes et génération d'attestations de travail en 1 clic.
+              <h4 className="font-serif font-bold text-lg text-[#100817]">Alertes Échéances CDD</h4>
+              <p className="text-xs text-[#6E6375] leading-relaxed">
+                Notification automatique 30 jours avant terme des périodes d'essai ou renouvellements.
               </p>
-              <div className="pt-3 flex items-center justify-between text-xs border-t border-teal-500/15">
-                <span className="text-slate-400 font-medium">Contrat_CDI.pdf</span>
-                <span className="text-[10px] font-mono font-bold text-[#14B8A6]">Signé</span>
+              <div className="p-3 bg-[#FAF6F0] rounded-xl border border-rose-200 text-[11px] font-mono-data text-rose-700 flex items-center justify-between">
+                <span>Fin d'essai : Amine Tazi</span>
+                <span className="font-bold">In 12j</span>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Feature 5: Suivi des Contrats & Échéances */}
-            <motion.div 
-              whileHover={{ y: -6, scale: 1.01 }}
-              transition={{ duration: 0.2 }}
-              className="md:col-span-4 glass-dark border border-teal-500/20 rounded-3xl p-7 space-y-5 hover:border-teal-400/50 hover:shadow-glow-teal transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white flex items-center justify-center font-bold shadow-glow-teal">
-                <Briefcase className="w-6 h-6" />
+            {/* CARTE BENTO 5 (4 cols) : Paie & Télé-déclarations */}
+            <div className="md:col-span-4 bg-[#211027] text-[#F7F1E7] rounded-2xl p-6 space-y-4 border border-white/10 group hover:border-[#D9AE3A]/50 transition-all duration-300 text-left">
+              <div className="w-9 h-9 rounded-xl bg-[#100817] text-[#E8C65A] flex items-center justify-center font-bold text-xs font-mono-data">
+                05
               </div>
-              <h3 className="text-xl font-bold text-white tracking-tight mb-1">Suivi des Contrats &amp; Essais</h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Alertes automatiques pour les renouvellements de CDD et fins de périodes d'essai.
+              <h4 className="font-serif font-bold text-lg text-[#F7F1E7]">Bulletins de Paie MAD</h4>
+              <p className="text-xs text-[#B8A9BD] leading-relaxed">
+                Édition des fiches de paie avec calcul automatique de l'IR et cotisations sociales.
               </p>
-              <div className="pt-3 flex items-center justify-between text-xs border-t border-teal-500/15">
-                <span className="text-slate-400 font-medium">Alerte Remplacement</span>
-                <span className="text-[10px] font-mono font-bold text-[#D4AF37]">Dans 30 jours</span>
+              <div className="text-[11px] font-mono-data text-[#D9AE3A] font-bold">
+                Export Damancom Prêt →
               </div>
-            </motion.div>
+            </div>
+
           </div>
         </motion.div>
       </section>
 
-      {/* ====================================================================
-          5. SECTION "COMMENT ÇA MARCHE" (AJUSTEMENT 2: BG-[#071120] & BORDER-Y BORDER-TEAL-500/10)
-         ==================================================================== */}
-      <section id="comment-ca-marche" className="py-24 bg-[#071120] border-y border-teal-500/10 relative">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          variants={sectionScrollVariant}
-          className="max-w-7xl mx-auto px-6 sm:px-8"
-        >
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Comment Ça Marche</h2>
-            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Déploiement simple &amp; prise en main immédiate
-            </p>
-            <p className="text-sm sm:text-base text-slate-300 font-medium">
-              Quatre étapes claires pour structurer la gestion de vos ressources humaines.
-            </p>
+      {/* 5. MÉTHODE — STORYTELLING STICKY (Fond Dark Ink #100817) */}
+      <section id="methode" className="py-28 bg-[#100817] text-[#F7F1E7] border-b border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-16">
+          
+          <div className="text-left max-w-2xl space-y-3">
+            <span className="text-xs font-bold text-[#D9AE3A] uppercase tracking-wider font-mono-data">
+              LA MÉTHODE AMSOFT
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#F7F1E7]">
+              Trois phases vers une sérénité RH totale
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'Centralisez vos collaborateurs',
-                desc: 'Importez les fiches de vos employés, leurs postes, départements et contrats de travail.'
-              },
-              {
-                step: '02',
-                title: 'Gérez congés & présences',
-                desc: 'Permettez aux équipes de soumettre leurs demandes et suivez les pointages au quotidien.'
-              },
-              {
-                step: '03',
-                title: 'Suivez vos indicateurs RH',
-                desc: 'Consultez les statistiques d\'effectif, taux de présence et solde de congés en temps réel.'
-              },
-              {
-                step: '04',
-                title: 'Organisez les documents',
-                desc: 'Émettez les attestations administratives et conservez vos pièces jointes en sécurité.'
-              }
-            ].map((st, idx) => (
-              <motion.div 
-                key={idx} 
-                whileHover={{ y: -5, scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-                className="glass-dark border border-teal-500/20 rounded-2xl p-7 space-y-4 hover:border-teal-400/50 transition-all shadow-soft hover:shadow-glow-teal"
-              >
-                <div className="text-3xl font-mono font-extrabold text-[#14B8A6] text-gradient-premium">{st.step}</div>
-                <h3 className="font-bold text-base text-white tracking-tight">{st.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">{st.desc}</p>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            
+            {/* Étape 01 */}
+            <div className="bg-[#211027] border border-white/10 rounded-2xl p-8 space-y-4 text-left hover:border-[#D9AE3A]/40 transition-all duration-300">
+              <div className="text-4xl font-serif font-bold text-[#D9AE3A]">01</div>
+              <h3 className="font-serif font-bold text-xl text-[#F7F1E7]">Digitaliser l'existant</h3>
+              <p className="text-xs text-[#B8A9BD] leading-relaxed">
+                Importation de votre liste d'effectifs, contrats de travail et historique des soldes de congés sans perte de données.
+              </p>
+            </div>
+
+            {/* Étape 02 */}
+            <div className="bg-[#211027] border border-white/10 rounded-2xl p-8 space-y-4 text-left hover:border-[#D9AE3A]/40 transition-all duration-300">
+              <div className="text-4xl font-serif font-bold text-[#D9AE3A]">02</div>
+              <h3 className="font-serif font-bold text-xl text-[#F7F1E7]">Automatiser le quotidien</h3>
+              <p className="text-xs text-[#B8A9BD] leading-relaxed">
+                Validation des congés en 1-clic, alertes automatiques et gestion des absences zéro papier.
+              </p>
+            </div>
+
+            {/* Étape 03 */}
+            <div className="bg-[#211027] border border-white/10 rounded-2xl p-8 space-y-4 text-left hover:border-[#D9AE3A]/40 transition-all duration-300">
+              <div className="text-4xl font-serif font-bold text-[#D9AE3A]">03</div>
+              <h3 className="font-serif font-bold text-xl text-[#F7F1E7]">Générer la paie</h3>
+              <p className="text-xs text-[#B8A9BD] leading-relaxed">
+                Édition des fiches de paie certifiées en Dirhams et télé-déclarations CNSS conformes.
+              </p>
+            </div>
+
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* ====================================================================
-          6. PRODUCT SHOWCASE DEMO SWITCHER (AJUSTEMENT 2: BG-[#050B14] & BORDER-Y BORDER-TEAL-500/10)
-         ==================================================================== */}
-      <section id="apercu" className="py-24 bg-[#050B14] border-y border-teal-500/10 relative">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          variants={sectionScrollVariant}
-          className="max-w-7xl mx-auto px-6 sm:px-8 space-y-12"
-        >
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <h2 className="text-xs font-bold text-[#14B8A6] uppercase tracking-widest">Démonstration Produit</h2>
-            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Découvrez l'interface en action
-            </p>
-            <p className="text-sm sm:text-base text-slate-300 font-medium">
-              Chaque espace est conçu pour maximiser l'efficacité des équipes RH.
-            </p>
+      {/* 6. AVIS DRH — FORMAT ÉDITORIAL & ARCHES (Fond Crème #FAF6F0) */}
+      <section id="avis" className="py-28 bg-[#FAF6F0] text-[#100817] border-b border-[#E5DEC9]">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 space-y-12 text-center">
+          
+          <span className="text-xs font-bold text-[#D9AE3A] uppercase tracking-wider font-mono-data">
+            TÉMOIGNAGES DRH
+          </span>
+
+          <div className="bg-white border border-[#E5DEC9] rounded-3xl p-8 sm:p-14 space-y-8 relative shadow-sm">
+            <blockquote className="font-serif italic text-xl sm:text-3xl text-[#100817] leading-relaxed max-w-3xl mx-auto">
+              « Amsoft People a apporté une rigueur et une élégance absolues à notre gestion des 250 collaborateurs. La conformité CNSS et l'édition des bulletins se font désormais sans le moindre stress. »
+            </blockquote>
+
+            <div className="flex flex-col items-center justify-center gap-3 pt-4 border-t border-[#E5DEC9]">
+              <div className="w-14 h-16 arch-top bg-[#211027] text-[#E8C65A] font-bold text-sm flex items-center justify-center">
+                FA
+              </div>
+              <div>
+                <div className="font-serif font-bold text-base text-[#100817]">Fatine Alaoui</div>
+                <div className="text-xs font-mono-data text-[#6E6375]">Directrice RH · Groupe Atlas (Casablanca)</div>
+              </div>
+            </div>
           </div>
 
-          {/* Interactive Switcher Tabs */}
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            {[
-              { id: 'dashboard', label: 'Tableau de Bord RH' },
-              { id: 'employees', label: 'Annuaire Collaborateurs' },
-              { id: 'leaves', label: 'Gestion des Congés' },
-              { id: 'documents', label: 'Coffre-fort Documents' }
-            ].map(tab => (
+        </div>
+      </section>
+
+      {/* 7. TARIFICATION — 3 OFFRES EN MAD */}
+      <section id="tarifs" className="py-28 bg-[#F7F1E7] text-[#100817] border-b border-[#E5DEC9]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-12 text-center">
+          
+          <div className="max-w-2xl mx-auto space-y-4">
+            <span className="text-xs font-bold text-[#D9AE3A] uppercase tracking-wider font-mono-data">
+              TARIFICATION TRANSPARENTE
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#100817]">
+              Un prix clair, calibré pour votre entreprise
+            </h2>
+
+            {/* Toggle Mensuel / Annuel */}
+            <div className="inline-flex items-center gap-3 p-1.5 bg-[#FAF6F0] border border-[#E5DEC9] rounded-full text-xs font-mono-data">
               <button
-                key={tab.id}
-                onClick={() => setActiveShowcaseTab(tab.id)}
-                className={`px-5 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                  activeShowcaseTab === tab.id
-                    ? 'bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white shadow-glow-teal border border-teal-400/40'
-                    : 'glass-dark text-slate-300 hover:text-white hover:border-teal-500/30'
+                onClick={() => setPricingCycle('monthly')}
+                className={`px-4 py-1.5 rounded-full transition-all cursor-pointer ${
+                  pricingCycle === 'monthly' ? 'bg-[#211027] text-white shadow' : 'text-[#6E6375]'
                 }`}
               >
-                {tab.label}
+                Mensuel
               </button>
-            ))}
+              <button
+                onClick={() => setPricingCycle('annual')}
+                className={`px-4 py-1.5 rounded-full transition-all cursor-pointer ${
+                  pricingCycle === 'annual' ? 'bg-[#211027] text-white shadow' : 'text-[#6E6375]'
+                }`}
+              >
+                Annuel (-20%)
+              </button>
+            </div>
           </div>
 
-          {/* Live Showcase Preview Box with Smooth Tab Transition */}
-          <div className="max-w-5xl mx-auto glass-dark border border-teal-500/30 rounded-3xl p-7 sm:p-9 shadow-glow-teal text-left">
-            {activeShowcaseTab === 'dashboard' && (
-              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
-                <div className="flex items-center justify-between text-xs border-b border-teal-500/20 pb-4">
-                  <span className="font-bold text-white text-sm">Vue d'ensemble analytique</span>
-                  <span className="text-xs text-teal-300 font-mono">Données consolidées 2026</span>
+          {/* 3 OFFRES PRICING */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch text-left">
+            
+            {/* Offre 1 : Standard */}
+            <div className="bg-white border border-[#E5DEC9] rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-sm">
+              <div className="space-y-4">
+                <h3 className="font-serif font-bold text-xl text-[#100817]">Standard</h3>
+                <p className="text-xs text-[#6E6375]">Pour les PME jusqu'à 30 salariés.</p>
+                <div className="text-3xl font-mono-data font-bold text-[#100817]">
+                  {pricingCycle === 'annual' ? '29 MAD' : '35 MAD'}
+                  <span className="text-xs font-normal text-[#6E6375]"> / employé / mois</span>
                 </div>
-                <div className="grid grid-cols-3 gap-5 text-center">
-                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
-                    <div className="text-xs text-slate-400 font-semibold uppercase">Effectif global</div>
-                    <div className="text-3xl font-mono font-extrabold text-white mt-1">248</div>
-                  </div>
-                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
-                    <div className="text-xs text-slate-400 font-semibold uppercase">Taux de présence</div>
-                    <div className="text-3xl font-mono font-extrabold text-[#14B8A6] mt-1">96.8%</div>
-                  </div>
-                  <div className="p-5 bg-[#050B14]/80 rounded-2xl border border-teal-500/20">
-                    <div className="text-xs text-slate-400 font-semibold uppercase">Demandes ouvertes</div>
-                    <div className="text-3xl font-mono font-extrabold text-[#D4AF37] mt-1">12</div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+              </div>
+              <ul className="space-y-3 text-xs text-[#100817]">
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Registre des effectifs</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Congés &amp; Absences</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Conforme Code du travail</li>
+              </ul>
+              <button onClick={onGoToLogin} className="w-full py-3 bg-[#FAF6F0] hover:bg-[#211027] hover:text-white font-bold text-xs rounded-xl transition-colors cursor-pointer">
+                Commencer
+              </button>
+            </div>
 
-            {activeShowcaseTab === 'employees' && (
-              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
-                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Extrait de l'annuaire du personnel</div>
-                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#0F766E] to-[#14B8A6] text-white font-bold text-xs flex items-center justify-center">AB</div>
-                    <div>
-                      <div className="font-bold text-white text-sm">Ahmed Benali (EMP-0001)</div>
-                      <div className="text-xs text-slate-400">Lead Développeur • CDI • Casablanca</div>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 bg-emerald-500/15 text-emerald-400 font-bold text-xs rounded-md border border-emerald-500/30">Actif</span>
+            {/* Offre 2 : Business Pro (Recommandée) */}
+            <div className="bg-[#211027] text-[#F7F1E7] border-2 border-[#D9AE3A] rounded-2xl p-8 flex flex-col justify-between space-y-6 relative shadow-2xl">
+              <span className="absolute -top-3.5 right-6 px-3.5 py-1 bg-[#D9AE3A] text-[#100817] font-mono-data text-[10px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">
+                LE CHOIX DES DRH
+              </span>
+              <div className="space-y-4">
+                <h3 className="font-serif font-bold text-xl text-[#F7F1E7]">Business Pro</h3>
+                <p className="text-xs text-[#B8A9BD]">De 30 à 200 salariés avec paie.</p>
+                <div className="text-3xl font-mono-data font-bold text-[#E8C65A]">
+                  {pricingCycle === 'annual' ? '49 MAD' : '59 MAD'}
+                  <span className="text-xs font-normal text-[#B8A9BD]"> / employé / mois</span>
                 </div>
-              </motion.div>
-            )}
+              </div>
+              <ul className="space-y-3 text-xs text-[#F7F1E7]">
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Tout du plan Standard</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Édition bulletins de paie MAD</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Module CNSS &amp; Teledeclarations</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Support prioritaire Casablanca</li>
+              </ul>
+              <button onClick={onGoToLogin} className="w-full py-3.5 bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-bold text-xs rounded-xl transition-colors cursor-pointer shadow-md">
+                Demander un essai gratuit
+              </button>
+            </div>
 
-            {activeShowcaseTab === 'leaves' && (
-              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
-                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Module de gestion des congés</div>
-                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-white text-sm">Congé Annuel (Repos fin de projet)</div>
-                    <div className="text-xs text-slate-400 mt-0.5">Collaborateur : Ahmed Benali • 8 jours autorisés</div>
-                  </div>
-                  <span className="px-3 py-1 bg-amber-500/15 text-amber-300 font-bold text-xs rounded-md border border-amber-500/30">En attente</span>
+            {/* Offre 3 : Enterprise */}
+            <div className="bg-white border border-[#E5DEC9] rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-sm">
+              <div className="space-y-4">
+                <h3 className="font-serif font-bold text-xl text-[#100817]">Enterprise</h3>
+                <p className="text-xs text-[#6E6375]">Grands comptes 200+ salariés.</p>
+                <div className="text-3xl font-mono-data font-bold text-[#100817]">
+                  Sur mesure
                 </div>
-              </motion.div>
-            )}
+              </div>
+              <ul className="space-y-3 text-xs text-[#100817]">
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Multi-sociétés &amp; Filiales</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Connecteur ERP / Paie sur mesure</li>
+                <li className="flex items-center gap-2"><Check className="w-4 h-4 text-[#D9AE3A]" /> Account Manager dédié</li>
+              </ul>
+              <button onClick={onGoToLogin} className="w-full py-3 bg-[#FAF6F0] hover:bg-[#211027] hover:text-white font-bold text-xs rounded-xl transition-colors cursor-pointer">
+                Contacter l'équipe
+              </button>
+            </div>
 
-            {activeShowcaseTab === 'documents' && (
-              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4 text-xs">
-                <div className="font-bold text-white text-sm border-b border-teal-500/20 pb-3">Coffre-fort documentaire sécurisé</div>
-                <div className="p-4 bg-[#050B14]/80 rounded-2xl border border-teal-500/20 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-[#14B8A6]" />
-                    <span className="font-medium text-white text-sm">Contrat_Travail_CDI_Signed.pdf</span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-400">1.25 MB</span>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ====================================================================
-          7. FINAL CTA BANNER & FOOTER (AJUSTEMENT 5: FOOTER AVEC DÉGRADÉ FROM-[#050B14] TO-[#0B1B33])
-         ==================================================================== */}
-      <motion.section 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="py-20 bg-[#050B14] text-white relative border-t border-teal-500/20"
-      >
-        <div className="max-w-5xl mx-auto px-6 text-center space-y-8 relative">
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
-            Une gestion RH plus simple, plus claire.
-          </h2>
-          <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
-            Accédez immédiatement à l'Espace RH Amsoft People pour piloter vos collaborateurs.
-          </p>
-          <div className="pt-2">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 35px rgba(20,184,166,0.6)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onGoToLogin}
-              className="btn-primary bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#0F766E] px-9 py-4 text-xs sm:text-sm font-extrabold inline-flex items-center gap-3 text-white rounded-xl shadow-glow-teal cursor-pointer"
-            >
-              <span>Accéder à l'Espace RH</span>
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* AJUSTEMENT 5 : FOOTER AVEC DÉGRADÉ FROM-[#050B14] TO-[#0B1B33] */}
-      <footer className="bg-gradient-to-b from-[#050B14] to-[#0B1B33] text-slate-400 py-8 text-xs border-t border-teal-500/10 select-none">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-white font-bold">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-xs text-white font-extrabold shadow-glow-teal">A</div>
-            <span className="text-sm">Amsoft People</span>
-            <span className="text-slate-400 font-normal text-xs ml-2">• Solution RH B2B Premium</span>
+      {/* 8. CTA FINAL & FOOTER (Fond Dark Ink #100817) */}
+      <footer className="bg-[#100817] text-[#B8A9BD] pt-28 pb-14 border-t border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-16">
+          
+          {/* CTA Final */}
+          <div className="text-center space-y-8 max-w-3xl mx-auto border-b border-white/10 pb-16">
+            <h2 className="font-serif text-3xl sm:text-5xl font-extrabold text-[#F7F1E7] leading-tight">
+              Donnez à votre entreprise la rigueur RH qu'elle mérite.
+            </h2>
+            <div className="pt-2">
+              <button
+                onClick={onGoToLogin}
+                className="px-8 py-4 bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817] font-bold text-xs rounded-xl transition-all duration-300 cursor-pointer shadow-lg shadow-[#D9AE3A]/10 inline-flex items-center gap-2 active:scale-95"
+              >
+                <span>Accéder à la plateforme Amsoft People</span>
+                <LogIn className="w-4 h-4 stroke-[2.2]" />
+              </button>
+            </div>
           </div>
-          <div className="text-xs text-slate-400 font-mono">
-            © 2026 Amsoft People. Tous droits réservés. • v2.0.0 Glass &amp; Glow Edition
+
+          {/* Footer Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-xs font-mono-data text-left">
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-[#211027] border border-[#D9AE3A]/40 flex items-center justify-center font-serif font-bold text-xs text-[#E8C65A]">
+                  A
+                </div>
+                <span className="font-serif font-bold text-sm text-[#F7F1E7]">Amsoft People</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-[#B8A9BD]/80">
+                Plateforme RH Tout-en-Un pour le marché marocain. Paie, CNSS &amp; Administration des effectifs.
+              </p>
+            </div>
+
+            <div>
+              <div className="font-bold text-[#F7F1E7] uppercase tracking-wider mb-3 text-[11px]">Navigation</div>
+              <ul className="space-y-2 text-[11px]">
+                <li><a href="#hero" className="hover:text-white transition-colors">Accueil</a></li>
+                <li><a href="#modules" className="hover:text-white transition-colors">Modules RH</a></li>
+                <li><a href="#methode" className="hover:text-white transition-colors">Méthode</a></li>
+                <li><a href="#tarifs" className="hover:text-white transition-colors">Tarification</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="font-bold text-[#F7F1E7] uppercase tracking-wider mb-3 text-[11px]">Conformité</div>
+              <ul className="space-y-2 text-[11px]">
+                <li>CNSS &amp; Teledeclarations.ma</li>
+                <li>Impôt sur le Revenu (IR)</li>
+                <li>AMO &amp; CIMR</li>
+                <li>Code du Travail Marocain</li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="font-bold text-[#F7F1E7] uppercase tracking-wider mb-3 text-[11px]">Langue &amp; Statut</div>
+              <div className="space-y-3 text-[11px]">
+                <div className="flex items-center gap-2 text-[#F7F1E7]">
+                  <Globe className="w-3.5 h-3.5 text-[#D9AE3A]" />
+                  <span>[FR] Français · (العربية قريباً)</span>
+                </div>
+                <div className="p-2.5 bg-[#211027] rounded-xl border border-white/5 text-[10px] text-emerald-400 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Systèmes Opérationnels 99.9%</span>
+                </div>
+              </div>
+            </div>
+
           </div>
+
+          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono-data text-[#B8A9BD]/60">
+            <div>© 2026 Amsoft People. Domaine : app.amsoft-people.ma</div>
+            <div>Direction Artistique : Précision Chaleureuse · Casablanca</div>
+          </div>
+
         </div>
       </footer>
 

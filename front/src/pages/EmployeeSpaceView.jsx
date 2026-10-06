@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-const EmployeeSpaceView = ({ onClockIn, onClockOut, onOpenLeaveModal, onOpenRequestModal }) => {
+const EmployeeSpaceView = ({ onClockIn, onClockOut, onOpenLeaveModal, onOpenRequestModal, theme = 'light' }) => {
   const [clockState, setClockState] = useState('out'); // 'in' or 'out'
   const [clockInTime, setClockInTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     let timer;
@@ -34,30 +36,40 @@ const EmployeeSpaceView = ({ onClockIn, onClockOut, onOpenLeaveModal, onOpenRequ
   };
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 min-h-screen p-6 sm:p-8 lg:p-10 pb-16 transition-colors duration-200 ${
+      isDark ? 'bg-[#100817] text-[#F7F1E7]' : 'bg-[#F8F9FA] text-[#1A1A24]'
+    }`}>
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#172033] to-[#0F766E] p-6 rounded-2xl text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className={`border p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 ${
+        isDark ? 'bg-[#180D21] border-white/10 text-[#F7F1E7]' : 'bg-white border-[#E5DEC9] text-[#1A1A24]'
+      }`}>
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm text-white font-bold text-xl flex items-center justify-center border-2 border-white/30 shrink-0 shadow-md">
+          <div className={`w-16 h-16 rounded-full font-extrabold text-xl flex items-center justify-center shrink-0 shadow-md border-2 ${
+            isDark ? 'bg-[#211027] border-[#D9AE3A] text-[#E8C65A]' : 'bg-[#FAF6F0] border-[#D4AF37] text-[#D4AF37]'
+          }`}>
             AB
           </div>
           <div>
-            <h2 className="text-xl font-bold">Bienvenue, Ahmed Benali !</h2>
-            <p className="text-xs text-teal-100 mt-0.5">Lead Développeur Fullstack • Département Informatique & Tech</p>
-            <div className="flex items-center gap-2 text-[11px] text-teal-100 font-mono mt-1">
-              <span>Matricule: EMP-0001</span> • <span>Contrat CDI</span>
+            <h2 className="text-xl font-serif font-bold">Bienvenue, Ahmed Benali !</h2>
+            <p className={`text-xs mt-0.5 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Lead Développeur Fullstack • Département Informatique & Tech</p>
+            <div className={`flex items-center gap-2 text-[11px] font-mono mt-1 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>
+              <span>Matricule: EMP-0001</span> • <span className={isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}>Contrat CDI</span>
             </div>
           </div>
         </div>
 
         {/* Quick Pointage Clock Button */}
-        <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-56">
-          <span className="text-xs font-medium text-teal-100 uppercase tracking-wider block">Pointage du jour</span>
-          <div className="text-2xl font-mono font-extrabold my-1">{formatTimer(elapsedSeconds)}</div>
+        <div className={`p-4 rounded-xl border text-center min-w-56 ${
+          isDark ? 'bg-[#100817] border-white/10' : 'bg-[#FAF6F0] border-[#E5DEC9]'
+        }`}>
+          <span className={`text-xs font-semibold uppercase tracking-wider block ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Pointage du jour</span>
+          <div className={`text-2xl font-mono font-extrabold my-1 ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>{formatTimer(elapsedSeconds)}</div>
           {clockState === 'out' ? (
             <button
               onClick={handleClockInClick}
-              className="w-full py-2 bg-[#0F766E] hover:bg-[#0d655f] text-white font-bold text-xs rounded-lg shadow-md flex items-center justify-center gap-1 transition-all cursor-pointer"
+              className={`w-full py-2 font-extrabold text-xs rounded-lg shadow-md flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                isDark ? 'bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817]' : 'bg-[#D4AF37] hover:bg-[#b8952b] text-[#1A1A24]'
+              }`}
             >
               <span className="material-symbols-outlined text-base">login</span>
               <span>MARQUER MON ARRIVÉE</span>
@@ -65,10 +77,12 @@ const EmployeeSpaceView = ({ onClockIn, onClockOut, onOpenLeaveModal, onOpenRequ
           ) : (
             <button
               onClick={handleClockOutClick}
-              className="w-full py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-lg shadow-md flex items-center justify-center gap-1 transition-all cursor-pointer"
+              className={`w-full py-2 font-extrabold text-xs rounded-lg shadow-md flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                isDark ? 'bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817]' : 'bg-[#D4AF37] hover:bg-[#b8952b] text-[#1A1A24]'
+              }`}
             >
               <span className="material-symbols-outlined text-base">logout</span>
-              <span>MARQUER MON DÉPART ({clockInTime})</span>
+              <span>MARQUER MON DÉPART ({clockInTime || '12:23 AM'})</span>
             </button>
           )}
         </div>
@@ -76,63 +90,79 @@ const EmployeeSpaceView = ({ onClockIn, onClockOut, onOpenLeaveModal, onOpenRequ
 
       {/* Quick Action Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs text-center flex flex-col items-center">
-          <span className="text-xs font-semibold text-slate-400">Solde de Congés</span>
-          <span className="text-3xl font-extrabold text-[#0F766E] my-1">16 jours</span>
-          <span className="text-xs text-slate-500 mb-3">sur 18 jours acquis</span>
+        <div className={`p-5 rounded-2xl border shadow-xs text-center flex flex-col items-center ${
+          isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+        }`}>
+          <span className={`text-xs font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Solde de Congés</span>
+          <span className={`text-3xl font-extrabold my-1 ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>16 jours</span>
+          <span className={`text-xs mb-3 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>sur 18 jours acquis</span>
           <button
             onClick={onOpenLeaveModal}
-            className="w-full py-2 bg-[#e6f7f4] hover:bg-[#d0f0eb] text-[#0F766E] font-bold text-xs rounded-xl transition-all cursor-pointer"
+            className={`w-full py-2 font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-xs ${
+              isDark ? 'bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817]' : 'bg-[#D4AF37] hover:bg-[#b8952b] text-[#1A1A24]'
+            }`}
           >
             Demander un Congé
           </button>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs text-center flex flex-col items-center">
-          <span className="text-xs font-semibold text-slate-400">Demandes Administratives</span>
-          <span className="text-3xl font-extrabold text-[#0F766E] my-1">1 active</span>
-          <span className="text-xs text-slate-500 mb-3">Attestation de travail (Acceptée)</span>
+        <div className={`p-5 rounded-2xl border shadow-xs text-center flex flex-col items-center ${
+          isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+        }`}>
+          <span className={`text-xs font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Demandes Administratives</span>
+          <span className={`text-3xl font-extrabold my-1 ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>1 active</span>
+          <span className={`text-xs mb-3 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Attestation de travail (Acceptée)</span>
           <button
             onClick={onOpenRequestModal}
-            className="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
+            className={`w-full py-2 font-bold text-xs rounded-xl transition-all cursor-pointer border ${
+              isDark ? 'bg-[#211027] border-white/10 hover:border-[#D9AE3A] text-[#F7F1E7]' : 'bg-[#FAF6F0] border-[#E5DEC9] hover:border-[#D4AF37] text-[#1A1A24]'
+            }`}
           >
             Nouvelle Demande RH
           </button>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs text-center flex flex-col items-center">
-          <span className="text-xs font-semibold text-slate-400">Mes Documents RH</span>
-          <span className="text-3xl font-extrabold text-slate-700 my-1">2 fichiers</span>
-          <span className="text-xs text-slate-500 mb-3">CIN, Contrat CDI signé</span>
-          <span className="text-xs font-bold text-[#0F766E]">Disponibles au téléchargement</span>
+        <div className={`p-5 rounded-2xl border shadow-xs text-center flex flex-col items-center ${
+          isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+        }`}>
+          <span className={`text-xs font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Mes Documents RH</span>
+          <span className={`text-3xl font-extrabold my-1 ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>2 fichiers</span>
+          <span className={`text-xs mb-3 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>CIN, Contrat CDI signé</span>
+          <span className={`text-xs font-bold ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>Disponibles au téléchargement</span>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs text-center flex flex-col items-center justify-between">
-          <span className="text-xs font-semibold text-slate-400">Horaires & Présence</span>
-          <span className="text-xs font-bold text-slate-800 my-1">09:00 - 17:30</span>
-          <span className="text-xs text-[#0F766E] font-semibold mb-2">98.5% Taux d'assiduité</span>
-          <div className="text-[10px] text-slate-400">Conforme à la charte d'entreprise</div>
+        <div className={`p-5 rounded-2xl border shadow-xs text-center flex flex-col items-center justify-between ${
+          isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+        }`}>
+          <span className={`text-xs font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Horaires & Présence</span>
+          <span className={`text-xs font-bold my-1 ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>09:00 - 17:30</span>
+          <span className={`text-xs font-semibold mb-2 ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>98.5% Taux d'assiduité</span>
+          <div className={`text-[10px] ${isDark ? 'text-[#B8A9BD]/70' : 'text-[#6B7280]'}`}>Conforme à la charte d'entreprise</div>
         </div>
       </div>
 
       {/* Contract & Personal Summary Card */}
-      <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-xs space-y-4">
-        <h3 className="font-bold text-base text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#0F766E]">badge</span>
+      <div className={`rounded-2xl border p-6 shadow-xs space-y-4 ${
+        isDark ? 'bg-[#180D21] border-white/10 text-[#F7F1E7]' : 'bg-white border-[#E5DEC9] text-[#1A1A24]'
+      }`}>
+        <h3 className={`font-bold text-base border-b pb-3 flex items-center gap-2 font-serif ${
+          isDark ? 'border-white/10 text-[#F7F1E7]' : 'border-[#E5DEC9] text-[#1A1A24]'
+        }`}>
+          <span className={`material-symbols-outlined ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>badge</span>
           <span>Détails de mon Contrat & Fiche RH</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
           <div>
-            <span className="text-slate-400 font-medium block">Type de contrat</span>
-            <span className="font-bold text-slate-900 text-sm mt-0.5 block">Contrat à Durée Indéterminée (CDI)</span>
+            <span className={`font-medium block ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Type de contrat</span>
+            <span className={`font-bold text-sm mt-0.5 block ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>Contrat à Durée Indéterminée (CDI)</span>
           </div>
           <div>
-            <span className="text-slate-400 font-medium block">Date de prise de poste</span>
-            <span className="font-semibold text-slate-800 mt-0.5 block">15 Mars 2021 (3 ans d'ancienneté)</span>
+            <span className={`font-medium block ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Date de prise de poste</span>
+            <span className={`font-semibold mt-0.5 block ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>15 Mars 2021 (3 ans d'ancienneté)</span>
           </div>
           <div>
-            <span className="text-slate-400 font-medium block">Responsable hiérarchique</span>
-            <span className="font-semibold text-slate-800 mt-0.5 block">Direction Générale / Fatine Alaoui</span>
+            <span className={`font-medium block ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Responsable hiérarchique</span>
+            <span className={`font-semibold mt-0.5 block ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>Direction Générale / Fatine Alaoui</span>
           </div>
         </div>
       </div>

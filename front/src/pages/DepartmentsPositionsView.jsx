@@ -1,18 +1,28 @@
 import React from 'react';
 
-const DepartmentsPositionsView = ({ departments, positions, onOpenNewDeptModal, onOpenNewPosModal }) => {
+const DepartmentsPositionsView = ({ departments, positions, onOpenNewDeptModal, onOpenNewPosModal, theme = 'light' }) => {
+  const isDark = theme === 'dark';
+
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 min-h-screen p-6 sm:p-8 lg:p-10 pb-16 transition-colors duration-200 ${
+      isDark ? 'bg-[#100817] text-[#F7F1E7]' : 'bg-[#F8F9FA] text-[#1A1A24]'
+    }`}>
       {/* Departments Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center justify-between border-b pb-4 ${
+          isDark ? 'border-white/10' : 'border-[#E5DEC9]'
+        }`}>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Départements d'Entreprise</h2>
-            <p className="text-xs text-slate-500">Structure organisationnelle et responsables de pôles.</p>
+            <h2 className={`text-2xl sm:text-3xl font-serif font-extrabold tracking-tight ${
+              isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'
+            }`}>Départements d'Entreprise</h2>
+            <p className={`text-xs ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Structure organisationnelle et responsables de pôles.</p>
           </div>
           <button
             onClick={onOpenNewDeptModal}
-            className="btn-primary text-xs px-4 py-2"
+            className={`text-xs font-extrabold px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-md active:scale-95 ${
+              isDark ? 'bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817]' : 'bg-[#D4AF37] hover:bg-[#c49f27] text-white'
+            }`}
           >
             <span className="material-symbols-outlined text-base">add</span>
             <span>Nouveau Département</span>
@@ -21,19 +31,29 @@ const DepartmentsPositionsView = ({ departments, positions, onOpenNewDeptModal, 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {departments.map((d) => (
-            <div key={d.id} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs hover:shadow-md transition-all">
+            <div key={d.id} className={`p-5 rounded-2xl border shadow-xs transition-all ${
+              isDark 
+                ? 'bg-[#180D21] border-white/10 text-[#F7F1E7] hover:border-[#D9AE3A]/40' 
+                : 'bg-white border-[#E5DEC9] text-[#1A1A24] hover:border-[#D4AF37]/50'
+            }`}>
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-[#e6f7f4] text-[#0F766E] flex items-center justify-center font-bold">
+                <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold ${
+                  isDark ? 'bg-[#211027] border-[#D9AE3A]/40 text-[#D9AE3A]' : 'bg-[#FAF6F0] border-[#D4AF37]/40 text-[#D4AF37]'
+                }`}>
                   <span className="material-symbols-outlined text-2xl">domain</span>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 font-bold text-xs text-slate-700">
+                <span className={`px-2.5 py-0.5 rounded-full border font-bold text-xs ${
+                  isDark ? 'bg-[#100817] border-white/10 text-[#D9AE3A]' : 'bg-[#FAF6F0] border-[#E5DEC9] text-[#D4AF37]'
+                }`}>
                   {d.employees_count || d.employee_count || 0} employés
                 </span>
               </div>
-              <h3 className="font-bold text-base text-slate-900">{d.name}</h3>
-              <p className="text-xs text-slate-500 mt-1">{d.description || 'Département opérationnel'}</p>
-              <div className="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600 flex items-center justify-between">
-                <span>Responsable : <strong>{d.manager_name || 'Direction'}</strong></span>
+              <h3 className={`font-bold text-base ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>{d.name}</h3>
+              <p className={`text-xs mt-1 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>{d.description || 'Département opérationnel'}</p>
+              <div className={`mt-4 pt-3 border-t text-xs flex items-center justify-between ${
+                isDark ? 'border-white/10 text-[#B8A9BD]' : 'border-[#E5DEC9] text-[#6B7280]'
+              }`}>
+                <span>Responsable : <strong className={isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}>{d.manager_name || 'Direction'}</strong></span>
               </div>
             </div>
           ))}
@@ -41,38 +61,46 @@ const DepartmentsPositionsView = ({ departments, positions, onOpenNewDeptModal, 
       </div>
 
       {/* Positions Section */}
-      <div className="space-y-4 pt-6 border-t border-slate-200">
+      <div className={`space-y-4 pt-6 border-t ${isDark ? 'border-white/10' : 'border-[#E5DEC9]'}`}>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Postes & Grille Salariale</h2>
-            <p className="text-xs text-slate-500">Postes configurés et plages salariales.</p>
+            <h2 className={`text-xl font-serif font-bold tracking-tight ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>Postes & Grille Salariale</h2>
+            <p className={`text-xs ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Postes configurés et plages salariales.</p>
           </div>
           <button
             onClick={onOpenNewPosModal}
-            className="btn-secondary text-xs px-4 py-2"
+            className={`border font-bold text-xs px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              isDark 
+                ? 'bg-[#180D21] border-white/10 hover:border-[#D9AE3A] text-[#F7F1E7] hover:text-[#D9AE3A]' 
+                : 'bg-white border-[#E5DEC9] hover:border-[#D4AF37] text-[#1A1A24] hover:text-[#D4AF37]'
+            }`}
           >
             <span className="material-symbols-outlined text-base">add</span>
             <span>Nouveau Poste</span>
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+        <div className={`rounded-2xl border shadow-xs overflow-hidden ${
+          isDark ? 'bg-[#180D21] border-white/10 text-[#F7F1E7]' : 'bg-white border-[#E5DEC9] text-[#1A1A24]'
+        }`}>
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <tr className={`border-b text-[11px] font-bold uppercase tracking-wider ${
+                isDark ? 'bg-[#100817] border-white/10 text-[#B8A9BD]' : 'bg-[#FAF6F0] border-[#E5DEC9] text-[#6B7280]'
+              }`}>
                 <th className="p-4">Intitulé du Poste</th>
                 <th className="p-4">Département</th>
-                <th className="p-4">Niveau Requise</th>
+                <th className="p-4">Niveau Requis</th>
                 <th className="p-4">Plage Salariale (MAD)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+            <tbody className={`divide-y text-xs ${isDark ? 'divide-white/10' : 'divide-[#E5DEC9]'}`}>
               {positions.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 font-bold text-slate-900">{p.title}</td>
-                  <td className="p-4">{p.department?.name || 'Général'}</td>
-                  <td className="p-4 font-semibold text-[#0F766E]">{p.level}</td>
-                  <td className="p-4 font-mono font-bold text-emerald-600">{p.min_salary} - {p.max_salary} MAD</td>
+                <tr key={p.id} className={`transition-colors ${isDark ? 'hover:bg-[#211027]' : 'hover:bg-[#FAF6F0]'}`}>
+                  <td className={`p-4 font-bold ${isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'}`}>{p.title}</td>
+                  <td className={`p-4 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>{p.department?.name || 'Général'}</td>
+                  <td className={`p-4 font-semibold ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>{p.level}</td>
+                  <td className={`p-4 font-mono font-bold ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>{p.min_salary} - {p.max_salary} MAD</td>
                 </tr>
               ))}
             </tbody>

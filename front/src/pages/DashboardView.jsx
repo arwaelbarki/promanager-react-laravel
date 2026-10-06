@@ -4,305 +4,363 @@ import {
   ArrowRight, 
   Download, 
   UserPlus, 
-  TrendingUp, 
-  AlertCircle, 
-  Calendar, 
-  Users, 
-  FileText,
-  Clock,
-  Sparkles
+  ArrowUpRight
 } from 'lucide-react';
 
-const DashboardView = ({ stats, currentUser, setActiveTab, onOpenNewEmployeeModal }) => {
-  const firstName = currentUser ? currentUser.split(' ')[0] : 'Fatine';
+const DashboardView = ({ stats, currentUser, setActiveTab, onOpenNewEmployeeModal, theme = 'light' }) => {
+  const isDark = theme === 'dark';
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.06
       }
     }
   };
 
   const sectionVariants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 8 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, ease: 'easeOut' }
+      transition: { duration: 0.3, ease: 'easeOut' }
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-theme-primary text-theme-primary font-sans select-none p-6 sm:p-8 pb-16 overflow-x-hidden">
-      {/* Background Subtle Gradient Blobs */}
-      <div className="fixed top-12 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse"></div>
-      <div className="fixed bottom-12 right-1/4 w-96 h-96 bg-teal-600/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-
+    <div className={`relative min-h-screen font-sans select-none p-6 sm:p-8 lg:p-10 pb-16 overflow-x-hidden transition-colors duration-200 ${
+      isDark ? 'bg-[#100817] text-[#F7F1E7]' : 'bg-[#F8F9FA] text-[#1A1A24]'
+    }`}>
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="max-w-6xl mx-auto space-y-8"
+        className="max-w-7xl mx-auto space-y-6 sm:space-y-8"
       >
-        {/* 1. HEADER INSTITUTIONNEL & ACCUEIL AVEC THEME UTILITIES */}
-        <motion.div variants={sectionVariants} className="border-b border-theme pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        {/* 1. EN-TÊTE SOBRE & ACTIONS */}
+        <motion.div variants={sectionVariants} className={`border-b pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+          isDark ? 'border-white/10' : 'border-[#E5DEC9]'
+        }`}>
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">
-              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse shadow-glow-teal"></span>
-              <span>Amsoft People • Pilotage des Ressources Humaines</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary tracking-tight">
-              Bonjour, <span className="bg-gradient-to-r from-teal-400 via-teal-300 to-teal-500 bg-clip-text text-transparent">{firstName}</span>
+            <h1 className={`text-2xl sm:text-3xl font-serif font-extrabold tracking-tight ${
+              isDark ? 'text-[#F7F1E7]' : 'text-[#1A1A24]'
+            }`}>
+              Tableau de Bord RH
             </h1>
-            <p className="text-xs text-theme-secondary font-medium mt-1 leading-relaxed">
-              Voici les éléments prioritaires qui nécessitent votre attention aujourd'hui.
+            <p className={`text-xs font-medium mt-1 ${
+              isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+            }`}>
+              Vue d'ensemble des effectifs, présences et conformité.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => setActiveTab('reports')}
-              className="bg-theme-card border border-theme text-theme-primary hover:border-teal-400 text-xs px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer flex items-center gap-2"
+              className={`text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-xs border ${
+                isDark 
+                  ? 'bg-[#180D21] border-white/10 text-[#F7F1E7] hover:border-[#D9AE3A] hover:text-[#D9AE3A]' 
+                  : 'bg-white border-[#E5DEC9] text-[#1A1A24] hover:bg-[#FAF6F0]'
+              }`}
             >
-              <Download className="w-4 h-4 text-teal-400" />
-              <span>Rapport RH</span>
+              <Download className="w-4 h-4 stroke-[1.5]" />
+              <span>Exporter Rapport</span>
             </button>
             <button
               onClick={onOpenNewEmployeeModal}
-              className="bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-glow-teal hover:scale-105 transition-all text-xs px-5 py-2.5 rounded-xl font-bold cursor-pointer flex items-center gap-2"
+              className={`text-xs font-extrabold px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95 ${
+                isDark 
+                  ? 'bg-[#D9AE3A] hover:bg-[#E8C65A] text-[#100817]' 
+                  : 'bg-[#D4AF37] hover:bg-[#c49f27] text-white'
+              }`}
             >
-              <UserPlus className="w-4 h-4" />
-              <span>+ Ajouter un employé</span>
+              <UserPlus className="w-4 h-4 stroke-[2.5]" />
+              <span>+ Nouvel Employé</span>
             </button>
           </div>
         </motion.div>
 
-        {/* 2. SECTION « À TRAITER EN PRIORITÉ » (TABLEAU DES DEMANDES AVEC THEME CARDS) */}
-        <motion.div variants={sectionVariants} className="space-y-4">
-          <div className="flex items-center justify-between border-b border-theme pb-2.5">
-            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-teal-400 shadow-glow-teal"></span>
-              <span>À traiter en priorité</span>
-            </h2>
-            <span className="text-xs font-medium text-theme-muted">
-              3 éléments en attente de décision
-            </span>
-          </div>
-
-          {/* Cartes à traiter unifiées avec bg-theme-card & border-theme */}
-          <div className="bg-theme-card border border-theme rounded-xl divide-y divide-slate-100 dark:divide-teal-500/10 shadow-soft backdrop-blur-md overflow-hidden">
-            {/* Tâche 1: Congés */}
-            <div
-              onClick={() => setActiveTab('leaves')}
-              className="group p-5 sm:p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all duration-200 cursor-pointer rounded-lg"
-            >
-              <div className="flex items-center gap-5">
-                <span className="px-3 py-1 bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-lg font-bold text-xs font-mono">
-                  12
-                </span>
-                <div>
-                  <span className="text-xs font-bold text-theme-primary block leading-tight">Demandes de congés en attente</span>
-                  <span className="text-[11px] text-theme-secondary leading-relaxed">Congés payés et RTT nécessitant une décision RH</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-teal-400 hover:text-teal-300 shrink-0 ml-4">
-                <span>Voir les demandes</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
-              </div>
-            </div>
-
-            {/* Tâche 2: Contrats */}
-            <div
-              onClick={() => setActiveTab('contracts')}
-              className="group p-5 sm:p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all duration-200 cursor-pointer rounded-lg"
-            >
-              <div className="flex items-center gap-5">
-                <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg font-bold text-xs font-mono">
-                  5
-                </span>
-                <div>
-                  <span className="text-xs font-bold text-theme-primary block leading-tight">Contrats arrivant à échéance</span>
-                  <span className="text-[11px] text-theme-secondary leading-relaxed">Périodes d'essai et fins de CDD dans les 30 prochains jours</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-teal-400 hover:text-teal-300 shrink-0 ml-4">
-                <span>Voir les contrats</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
-              </div>
-            </div>
-
-            {/* Tâche 3: Demandes RH */}
-            <div
-              onClick={() => setActiveTab('hr_requests')}
-              className="group p-5 sm:p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all duration-200 cursor-pointer rounded-lg"
-            >
-              <div className="flex items-center gap-5">
-                <span className="px-3 py-1 bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-lg font-bold text-xs font-mono">
-                  3
-                </span>
-                <div>
-                  <span className="text-xs font-bold text-theme-primary block leading-tight">Demandes administratives RH</span>
-                  <span className="text-[11px] text-theme-secondary leading-relaxed">Attestations de travail et documents administratifs demandés</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-semibold text-teal-400 hover:text-teal-300 shrink-0 ml-4">
-                <span>Traiter les demandes</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 3. VUE RH GLOBALE (CARTES PUR BLANC AVEC BARRE D'ACCENT LATÉRALE) */}
-        <motion.div variants={sectionVariants} className="space-y-4 pt-2">
-          <div className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">
-            Vue RH Globale
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 2. LIGNE UNIQUE DE MÉTRIQUES */}
+        <motion.div variants={sectionVariants}>
+          <div 
+            className={`rounded-2xl p-6 grid grid-cols-2 lg:grid-cols-4 gap-4 border divide-y sm:divide-y-0 sm:divide-x shadow-xs ${
+              isDark 
+                ? 'bg-[#180D21] border-white/10 divide-white/10 text-[#F7F1E7]' 
+                : 'bg-white border-[#E5DEC9] divide-[#E5DEC9] text-[#1A1A24]'
+            }`}
+          >
             
-            {/* Carte 1 : Employés Actifs */}
-            <div className="relative bg-white border border-slate-200 rounded-xl p-5 overflow-hidden hover:shadow-md hover:border-teal-200 transition-all duration-200">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-teal-500 to-teal-400"></div>
-              <div className="flex items-start justify-between mb-3 pl-2">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Employés Actifs</span>
-                <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center">
-                  <Users className="w-4 h-4 text-teal-600" />
-                </div>
-              </div>
-              <div className="text-3xl font-extrabold text-[#0B1B33] font-mono pl-2">248</div>
-              <div className="flex items-center gap-2 mt-3 pl-2">
-                <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full w-[85%] bg-gradient-to-r from-teal-500 to-teal-400 rounded-full"></div>
-                </div>
-                <span className="text-[10px] font-bold text-teal-600">+12%</span>
+            {/* Metric 1 : Employés Actifs */}
+            <div className="pt-2 sm:pt-0 sm:px-4 first:pl-0 flex flex-col justify-between space-y-1">
+              <span className={`text-xs font-semibold flex items-center gap-2 ${
+                isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+              }`}>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                Employés actifs
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono-data tracking-tight">248</span>
+                <span className="text-[11px] text-emerald-600 font-bold bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded">+12.4%</span>
               </div>
             </div>
 
-            {/* Carte 2 : Congés en Attente */}
-            <div className="relative bg-white border border-slate-200 rounded-xl p-5 overflow-hidden hover:shadow-md hover:border-amber-200 transition-all duration-200">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-amber-400"></div>
-              <div className="flex items-start justify-between mb-3 pl-2">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Congés en Attente</span>
-                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-amber-600" />
-                </div>
+            {/* Metric 2 : Congés en Attente */}
+            <div className="pt-2 sm:pt-0 sm:px-4 flex flex-col justify-between space-y-1">
+              <span className={`text-xs font-semibold flex items-center gap-2 ${
+                isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+              }`}>
+                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isDark ? 'bg-[#D9AE3A]' : 'bg-[#D4AF37]'}`}></span>
+                Congés en attente
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono-data tracking-tight">12</span>
+                <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
+                  isDark ? 'text-[#E8C65A] bg-[#D9AE3A]/10 border border-[#D9AE3A]/30' : 'text-[#B06000] bg-[#FEF7E0]'
+                }`}>à valider</span>
               </div>
-              <div className="text-3xl font-extrabold text-[#0B1B33] font-mono pl-2">12</div>
-              <div className="text-[11px] text-slate-500 mt-2 font-medium pl-2">Demandes reçues</div>
             </div>
 
-            {/* Carte 3 : Absences Aujourd'hui */}
-            <div className="relative bg-white border border-slate-200 rounded-xl p-5 overflow-hidden hover:shadow-md hover:border-slate-300 transition-all duration-200">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-slate-400 to-slate-300"></div>
-              <div className="flex items-start justify-between mb-3 pl-2">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Absences Aujourd'hui</span>
-                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-slate-600" />
-                </div>
+            {/* Metric 3 : Absences Jour */}
+            <div className="pt-2 sm:pt-0 sm:px-4 flex flex-col justify-between space-y-1">
+              <span className={`text-xs font-semibold flex items-center gap-2 ${
+                isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+              }`}>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#6B7280] shrink-0"></span>
+                Absences jour
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono-data tracking-tight">8</span>
+                <span className={`text-[11px] font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>96.8% présence</span>
               </div>
-              <div className="text-3xl font-extrabold text-[#0B1B33] font-mono pl-2">8</div>
-              <div className="text-[11px] text-slate-500 mt-2 font-medium pl-2">Maladie / Autoris.</div>
             </div>
 
-            {/* Carte 4 : Contrats à Échéance */}
-            <div className="relative bg-white border border-slate-200 rounded-xl p-5 overflow-hidden hover:shadow-md hover:border-amber-200 transition-all duration-200">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500 to-orange-400"></div>
-              <div className="flex items-start justify-between mb-3 pl-2">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Contrats à Échéance</span>
-                <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
-                  <AlertCircle className="w-4 h-4 text-amber-600" />
-                </div>
+            {/* Metric 4 : Contrats à Échéance */}
+            <div className="pt-2 sm:pt-0 sm:px-4 flex flex-col justify-between space-y-1">
+              <span className={`text-xs font-semibold flex items-center gap-2 ${
+                isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+              }`}>
+                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isDark ? 'bg-[#D9AE3A]' : 'bg-[#1A1A24]'}`}></span>
+                Contrats à échéance
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono-data tracking-tight">5</span>
+                <span className={`text-[11px] font-bold ${isDark ? 'text-[#E8C65A]' : 'text-[#1A1A24]'}`}>&lt; 30 jours</span>
               </div>
-              <div className="text-3xl font-extrabold text-amber-600 font-mono pl-2">5</div>
-              <div className="text-[11px] text-slate-500 mt-2 font-medium pl-2">Dans les 30 jours</div>
             </div>
 
           </div>
         </motion.div>
 
-        {/* 4. SITUATION DES EFFECTIFS (RÉPARTITION PAR DÉPARTEMENT & CONTRAT AVEC BG-THEME-CARD) */}
-        <motion.div variants={sectionVariants} className="space-y-4 pt-2">
-          <div className="border-b border-theme pb-2.5 flex items-center justify-between">
-            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-wider">
-              Situation des Effectifs
-            </h2>
-            <span className="text-xs font-mono text-theme-muted">Total : 248 collaborateurs</span>
-          </div>
+        {/* 3. SECTION "À TRAITER EN PRIORITÉ" & GRAPHIQUE ÉPURÉ */}
+        <motion.div variants={sectionVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+          
+          {/* 3.1 À Traiter en Priorité */}
+          <div 
+            className={`lg:col-span-7 rounded-2xl border overflow-hidden flex flex-col justify-between shadow-xs ${
+              isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+            }`}
+          >
+            <div className={`p-4 sm:p-5 border-b flex items-center justify-between ${
+              isDark ? 'border-white/10 bg-[#180D21]' : 'border-[#E5DEC9] bg-white'
+            }`}>
+              <h2 className="text-xs sm:text-sm font-serif font-bold flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${isDark ? 'bg-[#D9AE3A]' : 'bg-[#D4AF37]'}`}></span>
+                <span>À Traiter en Priorité</span>
+              </h2>
+              <span className={`text-xs font-semibold ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>
+                3 actions requises
+              </span>
+            </div>
 
-          <div className="bg-theme-card border border-theme rounded-xl p-8 grid grid-cols-1 md:grid-cols-12 gap-8 shadow-soft backdrop-blur-md">
-            {/* Bloc Gauche : Répartition par département */}
-            <div className="md:col-span-7 space-y-4">
-              <h3 className="font-bold text-xs text-teal-400 uppercase tracking-wide">
-                Répartition par département
-              </h3>
-              <div className="space-y-4 pt-1">
-                {[
-                  { name: 'Informatique & Tech', count: 78, pct: 31 },
-                  { name: 'Production & Opérations', count: 54, pct: 22 },
-                  { name: 'Commercial & Ventes', count: 42, pct: 17 },
-                  { name: 'Marketing & Communication', count: 32, pct: 13 },
-                  { name: 'Finance & Comptabilité', count: 24, pct: 10 },
-                ].map((dept, idx) => (
-                  <div key={idx} className="space-y-1.5 text-xs">
-                    <div className="flex items-center justify-between text-theme-secondary font-medium">
-                      <span>{dept.name}</span>
-                      <span className="font-mono text-theme-primary font-bold">
-                        {dept.count} <span className="text-theme-muted text-[10px] font-normal">({dept.pct}%)</span>
-                      </span>
-                    </div>
-                    <div className="w-full h-2 bg-theme-secondary rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-teal-500 to-teal-400 shadow-glow-teal rounded-full transition-all duration-500" 
-                        style={{ width: `${dept.pct}%` }}
-                      ></div>
-                    </div>
+            <div className={`divide-y ${isDark ? 'divide-white/10' : 'divide-[#E5DEC9]'}`}>
+              {/* Action 1 */}
+              <div
+                onClick={() => setActiveTab('leaves')}
+                className={`p-4 sm:p-5 flex items-center justify-between transition-colors cursor-pointer group ${
+                  isDark ? 'hover:bg-[#211027]' : 'hover:bg-[#FAF6F0]'
+                }`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-9 h-9 rounded-full border font-mono-data font-bold text-xs flex items-center justify-center shrink-0 ${
+                    isDark ? 'bg-[#100817] border-white/10 text-[#D9AE3A]' : 'bg-[#FAF6F0] border-[#E5DEC9] text-[#1A1A24]'
+                  }`}>
+                    12
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Ligne de séparation fine et Bloc Droit : Répartition par contrat */}
-            <div className="md:col-span-5 border-t md:border-t-0 md:border-l border-theme pt-6 md:pt-0 md:pl-8 flex flex-col justify-between">
-              <div className="space-y-4">
-                <h3 className="font-bold text-xs text-teal-400 uppercase tracking-wide">
-                  Répartition par contrat
-                </h3>
-                <div className="space-y-3 text-xs">
-                  {[
-                    { label: 'CDI', count: 168, pct: '68%', color: 'bg-teal-400' },
-                    { label: 'CDD', count: 45, pct: '18%', color: 'bg-amber-400' },
-                    { label: 'Stage', count: 20, pct: '8%', color: 'bg-slate-400' },
-                    { label: 'Freelance / Intérim', count: 15, pct: '6%', color: 'bg-slate-600' },
-                  ].map((c, i) => (
-                    <div key={i} className="py-2.5 px-4 bg-theme-card border border-theme rounded-lg flex items-center justify-between hover:border-teal-400 transition-all">
-                      <div className="flex items-center gap-2.5">
-                        <span className={`w-2.5 h-2.5 rounded-full ${c.color} shadow-glow-teal`}></span>
-                        <span className="font-semibold text-theme-secondary">{c.label}</span>
-                      </div>
-                      <span className="font-mono font-bold text-teal-400">
-                        {c.count} <span className="text-theme-muted text-[10px] font-normal">({c.pct})</span>
-                      </span>
-                    </div>
-                  ))}
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold">Demandes de congés en attente de validation</h4>
+                    <p className={`text-xs font-normal mt-0.5 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>8 congés payés annuels et 4 RTT soumis par l'équipe</p>
+                  </div>
+                </div>
+                <div className={`flex items-center gap-1 text-xs font-bold group-hover:translate-x-1 transition-all shrink-0 ml-2 ${
+                  isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'
+                }`}>
+                  <span>Traiter</span>
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
                 </div>
               </div>
 
-              <div className="pt-6 text-right">
-                <button
-                  onClick={() => setActiveTab('contracts')}
-                  className="text-xs font-semibold text-teal-400 hover:underline cursor-pointer flex items-center gap-1 justify-end"
-                >
-                  <span>Consulter tous les contrats</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+              {/* Action 2 */}
+              <div
+                onClick={() => setActiveTab('contracts')}
+                className={`p-4 sm:p-5 flex items-center justify-between transition-colors cursor-pointer group ${
+                  isDark ? 'hover:bg-[#211027]' : 'hover:bg-[#FAF6F0]'
+                }`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-9 h-9 rounded-full border font-mono-data font-bold text-xs flex items-center justify-center shrink-0 ${
+                    isDark ? 'bg-[#100817] border-white/10 text-[#D9AE3A]' : 'bg-[#FAF6F0] border-[#E5DEC9] text-[#1A1A24]'
+                  }`}>
+                    5
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold">Contrats arrivant à échéance sous 30 jours</h4>
+                    <p className={`text-xs font-normal mt-0.5 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Fins de CDD et périodes d'essai à valider ou renouveler</p>
+                  </div>
+                </div>
+                <div className={`flex items-center gap-1 text-xs font-bold group-hover:translate-x-1 transition-all shrink-0 ml-2 ${
+                  isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'
+                }`}>
+                  <span>Consulter</span>
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+                </div>
+              </div>
+
+              {/* Action 3 */}
+              <div
+                onClick={() => setActiveTab('hr_requests')}
+                className={`p-4 sm:p-5 flex items-center justify-between transition-colors cursor-pointer group ${
+                  isDark ? 'hover:bg-[#211027]' : 'hover:bg-[#FAF6F0]'
+                }`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-9 h-9 rounded-full border font-mono-data font-bold text-xs flex items-center justify-center shrink-0 ${
+                    isDark ? 'bg-[#100817] border-white/10 text-[#D9AE3A]' : 'bg-[#FAF6F0] border-[#E5DEC9] text-[#1A1A24]'
+                  }`}>
+                    3
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold">Demandes d'attestations et pièces administratives</h4>
+                    <p className={`text-xs font-normal mt-0.5 ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Attestations de travail et fiches de paie transmises</p>
+                  </div>
+                </div>
+                <div className={`flex items-center gap-1 text-xs font-bold group-hover:translate-x-1 transition-all shrink-0 ml-2 ${
+                  isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'
+                }`}>
+                  <span>Émettre</span>
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+                </div>
               </div>
             </div>
+
+            <div className={`p-3 text-right border-t ${
+              isDark ? 'bg-[#100817] border-white/10' : 'bg-[#FAF6F0] border-[#E5DEC9]'
+            }`}>
+              <span className={`text-[11px] ${isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'}`}>Dernière synchronisation RH : Aujourd'hui à 09:30</span>
+            </div>
+          </div>
+
+          {/* 3.2 Graphique Épuré Évolution des présences */}
+          <div 
+            className={`lg:col-span-5 rounded-2xl border p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-xs ${
+              isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+            }`}
+          >
+            <div className={`flex items-center justify-between border-b pb-3 ${
+              isDark ? 'border-white/10' : 'border-[#E5DEC9]'
+            }`}>
+              <h3 className="text-xs sm:text-sm font-serif font-bold">Évolution des présences (30 jours)</h3>
+              <span className={`text-xs font-mono-data font-bold ${
+                isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'
+              }`}>96.8% moy.</span>
+            </div>
+
+            {/* SVG Area Chart */}
+            <div className="relative pt-1">
+              <svg className="w-full h-44" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={isDark ? "#D9AE3A" : "#D4AF37"} stopOpacity="0.18" />
+                    <stop offset="100%" stopColor={isDark ? "#D9AE3A" : "#D4AF37"} stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal Grid lines */}
+                <line x1="0" y1="40" x2="600" y2="40" stroke={isDark ? "rgba(255,255,255,0.08)" : "#E5DEC9"} strokeDasharray="4 4" />
+                <line x1="0" y1="90" x2="600" y2="90" stroke={isDark ? "rgba(255,255,255,0.08)" : "#E5DEC9"} strokeDasharray="4 4" />
+                <line x1="0" y1="140" x2="600" y2="140" stroke={isDark ? "rgba(255,255,255,0.08)" : "#E5DEC9"} strokeDasharray="4 4" />
+
+                {/* Area Fill */}
+                <path d="M0 140 Q 100 40, 200 70 T 400 30 T 600 60 L 600 170 L 0 170 Z" fill="url(#curveFill)" />
+
+                {/* Main Trend Line */}
+                <path d="M0 140 Q 100 40, 200 70 T 400 30 T 600 60" stroke={isDark ? "#D9AE3A" : "#D4AF37"} strokeWidth="2.5" strokeLinecap="round" />
+
+                {/* Data Points */}
+                <circle cx="200" cy="70" r="4" fill={isDark ? "#D9AE3A" : "#D4AF37"} stroke={isDark ? "#100817" : "#FFFFFF"} strokeWidth="2" />
+                <circle cx="400" cy="30" r="4" fill={isDark ? "#D9AE3A" : "#D4AF37"} stroke={isDark ? "#100817" : "#FFFFFF"} strokeWidth="2" />
+                <circle cx="600" cy="60" r="4" fill={isDark ? "#D9AE3A" : "#D4AF37"} stroke={isDark ? "#100817" : "#FFFFFF"} strokeWidth="2" />
+              </svg>
+            </div>
+
+            <div className={`flex items-center justify-between text-[11px] font-mono-data pt-2 border-t ${
+              isDark ? 'text-[#B8A9BD] border-white/10' : 'text-[#6B7280] border-[#E5DEC9]'
+            }`}>
+              <span>01 Oct</span>
+              <span>08 Oct</span>
+              <span>15 Oct</span>
+              <span>22 Oct</span>
+              <span>30 Oct</span>
+            </div>
+          </div>
+
+        </motion.div>
+
+        {/* 4. REPARTITION PAR DÉPARTEMENT SOBRE */}
+        <motion.div variants={sectionVariants} className={`rounded-2xl border p-5 sm:p-6 space-y-4 shadow-xs ${
+          isDark ? 'bg-[#180D21] border-white/10' : 'bg-white border-[#E5DEC9]'
+        }`}>
+          <div className={`flex items-center justify-between border-b pb-3 ${
+            isDark ? 'border-white/10' : 'border-[#E5DEC9]'
+          }`}>
+            <h3 className={`text-xs sm:text-sm font-bold uppercase tracking-wider ${
+              isDark ? 'text-[#B8A9BD]' : 'text-[#6B7280]'
+            }`}>Répartition de l'Effectif par Département</h3>
+            <button
+              onClick={() => setActiveTab('departments')}
+              className={`text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors ${
+                isDark ? 'text-[#F7F1E7] hover:text-[#D9AE3A]' : 'text-[#1A1A24] hover:text-[#D4AF37]'
+              }`}
+            >
+              <span>Vue détaillée</span>
+              <ArrowUpRight className={`w-3.5 h-3.5 ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-1">
+            {[
+              { name: 'Informatique & Tech', count: 78, pct: 31 },
+              { name: 'Production & Opérations', count: 54, pct: 22 },
+              { name: 'Commercial & Ventes', count: 42, pct: 17 },
+              { name: 'Marketing & Com', count: 32, pct: 13 },
+              { name: 'Finance & Compta', count: 24, pct: 10 },
+            ].map((d, i) => (
+              <div key={i} className={`p-3.5 border rounded-xl space-y-2 ${
+                isDark ? 'bg-[#100817] border-white/10' : 'bg-[#FAF6F0] border-[#E5DEC9]'
+              }`}>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold truncate">{d.name}</span>
+                  <span className={`font-mono-data font-bold ${isDark ? 'text-[#D9AE3A]' : 'text-[#D4AF37]'}`}>{d.count}</span>
+                </div>
+                <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-white/10' : 'bg-[#E5DEC9]'}`}>
+                  <div className={`h-full rounded-full ${isDark ? 'bg-[#D9AE3A]' : 'bg-[#D4AF37]'}`} style={{ width: `${d.pct}%` }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         </motion.div>
+
       </motion.div>
     </div>
   );
